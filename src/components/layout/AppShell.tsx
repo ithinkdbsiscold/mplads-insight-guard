@@ -20,7 +20,7 @@ import { listAlerts } from "@/services/api";
 const primaryNav = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/projects", label: "Projects", icon: Table2 },
-  { to: "/alerts", label: "Risk Alerts", icon: AlertTriangle },
+  { to: "/alerts", label: "Anomaly Alerts", icon: AlertTriangle },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/map", label: "Geographic Map", icon: MapPinned },
   { to: "/assistant", label: "AI Assistant", icon: MessageSquareText },
@@ -35,7 +35,7 @@ const adminNav = [
 const titles: Record<string, string> = {
   "/dashboard": "Overview",
   "/projects": "Projects",
-  "/alerts": "Risk Alerts",
+  "/alerts": "Anomaly Alerts",
   "/analytics": "Analytics",
   "/map": "Geographic Map",
   "/assistant": "AI Assistant",
@@ -201,7 +201,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </div>
               <Link
                 to="/alerts"
-                aria-label={`Notifications: ${unresolvedHigh} unresolved high-risk alerts`}
+                aria-label={`Notifications: ${unresolvedHigh} unresolved high priority alerts`}
                 className="relative grid h-8 w-8 place-items-center rounded-[3px] border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
               >
                 <Bell aria-hidden className="h-4 w-4" />
@@ -226,8 +226,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         <footer className="border-t border-border px-4 py-4 sm:px-6">
           <p className="mx-auto max-w-[1440px] text-[11px] text-subtle">
-            Risk indicators are analytical signals for prioritising review. They do not establish
-            wrongdoing. All findings require human verification.
+            The system identifies indicators for review. It does not determine wrongdoing.
           </p>
         </footer>
       </div>

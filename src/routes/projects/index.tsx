@@ -56,7 +56,7 @@ function ProjectsPage() {
         <FilterSelect label="Category" value={category}
           onChange={(v) => { setCategory(v); setPage(1); }}
           options={opts.categories.map((c) => ({ value: c, label: c }))} className="w-[170px]" />
-        <FilterSelect label="Risk" value={risk}
+        <FilterSelect label="Priority Level" value={risk}
           onChange={(v) => { setRisk(v as RiskLevel | ""); setPage(1); }}
           options={["low","medium","high","critical"].map(r=>({value:r,label:r.charAt(0).toUpperCase()+r.slice(1)}))}
           className="w-[120px]" />

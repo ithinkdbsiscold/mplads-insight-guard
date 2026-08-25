@@ -103,7 +103,7 @@ export function Button({
 
 export const riskMeta: Record<RiskLevel, { label: string; dot: string; text: string; bg: string; border: string; bar: string }> = {
   low: {
-    label: "Low",
+    label: "No Significant Anomalies",
     dot: "bg-risk-low",
     text: "text-risk-low",
     bg: "bg-risk-low-soft",
@@ -111,7 +111,7 @@ export const riskMeta: Record<RiskLevel, { label: string; dot: string; text: str
     bar: "bg-risk-low",
   },
   medium: {
-    label: "Medium",
+    label: "Review Recommended",
     dot: "bg-risk-medium",
     text: "text-risk-medium",
     bg: "bg-risk-medium-soft",
@@ -119,7 +119,7 @@ export const riskMeta: Record<RiskLevel, { label: string; dot: string; text: str
     bar: "bg-risk-medium",
   },
   high: {
-    label: "High",
+    label: "High Priority",
     dot: "bg-risk-high",
     text: "text-risk-high",
     bg: "bg-risk-high-soft",
@@ -127,7 +127,7 @@ export const riskMeta: Record<RiskLevel, { label: string; dot: string; text: str
     bar: "bg-risk-high",
   },
   critical: {
-    label: "Critical",
+    label: "Immediate Review",
     dot: "bg-risk-critical",
     text: "text-risk-critical",
     bg: "bg-risk-critical-soft",
@@ -169,7 +169,7 @@ export function RiskScore({ score, level }: { score: number; level: RiskLevel })
     <span className="inline-flex items-center gap-2">
       <span aria-hidden className={cn("h-4 w-[3px] rounded-sm", m.bar)} />
       <span className="tnum text-[13px] font-semibold text-foreground">{score}</span>
-      <span className="sr-only">{m.label} risk</span>
+      <span className="sr-only">{m.label} priority</span>
     </span>
   );
 }

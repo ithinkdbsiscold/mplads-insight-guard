@@ -17,7 +17,7 @@ export const Route = createFileRoute("/projects/$id")({
   head: ({ params }) => ({
     meta: [
       { title: `${params.id} — MPLADS Guardian` },
-      { name: "description", content: `Risk summary and AI findings for project ${params.id}.` },
+      { name: "description", content: `Priority summary and AI findings for project ${params.id}.` },
     ],
   }),
   component: ProjectDetailPage,
@@ -57,7 +57,7 @@ function ProjectDetailPage() {
       {/* top row: risk summary + financials */}
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel className="lg:col-span-1">
-          <PanelHeader title="Risk Summary" />
+          <PanelHeader title="Investigation Priority" />
           <div className="space-y-4 px-4 py-4">
             <div className="flex items-center gap-3">
               <RiskScore score={project.riskScore} level={project.riskLevel} />
@@ -182,9 +182,12 @@ function FindingRow({ agent, finding, severity, evidence, status }: AgentFinding
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[12.5px] font-semibold text-foreground">{agent}</p>
-          <p className="mt-0.5 text-[12.5px] text-muted-foreground">{finding}</p>
+          <p className="mt-1 text-[12.5px] text-muted-foreground">
+            <span className="font-medium text-foreground">Indicator detected:</span> {finding}
+          </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          <span className="text-[11px] text-muted-foreground">Strength:</span>
           <RiskBadge level={severity} />
           <span className={cn("text-[11px] font-medium", status === "Escalated" ? "text-risk-critical" : "text-muted-foreground")}>{status}</span>
         </div>

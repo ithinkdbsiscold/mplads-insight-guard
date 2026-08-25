@@ -136,7 +136,7 @@ export function getFilterOptions() {
 export function getOverviewKpis() {
   return [
     {
-      label: "Total Projects",
+      label: "Projects Monitored",
       value: "24,582",
       delta: "+312 from previous period",
       trend: "up" as const,
@@ -150,7 +150,7 @@ export function getOverviewKpis() {
       note: "Sanctioned value under review",
     },
     {
-      label: "High-Risk Projects",
+      label: "Requiring Attention",
       value: "1,284",
       delta: "+8.4% from previous period",
       trend: "up" as const,

@@ -93,7 +93,7 @@ function OverviewPage() {
           className="w-[160px]"
         />
         <FilterSelect
-          label="Risk Level"
+          label="Priority Level"
           value={riskFilter}
           onChange={(v) => setRiskFilter(v as RiskLevel | "")}
           options={[
@@ -117,7 +117,7 @@ function OverviewPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         {/* risk distribution */}
         <Panel>
-          <PanelHeader title="Risk Distribution" description="Projects by risk level" />
+          <PanelHeader title="Anomaly Distribution" description="Projects by priority level" />
           <div className="px-4 py-4">
             <ResponsiveContainer width="100%" height={210}>
               <BarChart data={riskDist} barCategoryGap="28%">
@@ -210,8 +210,8 @@ function OverviewPage() {
       {/* -------- risk trend -------- */}
       <Panel>
         <PanelHeader
-          title="Risk Trend"
-          description="12-month high-risk project trend"
+          title="Anomaly Trend"
+          description="12-month priority trend"
           actions={
             <span className="flex items-center gap-1 text-[11.5px] font-medium text-risk-high">
               <TrendingUp className="h-3.5 w-3.5" />
@@ -289,14 +289,14 @@ function OverviewPage() {
       <Panel>
         <PanelHeader
           title="Projects Requiring Attention"
-          description="Highest risk-scored projects based on current filters"
+          description="Highest priority projects based on current filters"
         />
         <ProjectTable rows={attentionProjects.rows} compact />
       </Panel>
 
       {/* -------- recent alerts -------- */}
       <Panel>
-        <PanelHeader title="Recent Alerts" description="Latest AI-generated risk signals" />
+        <PanelHeader title="Anomaly Alerts" description="Latest AI-generated anomaly signals" />
         <div className="divide-y divide-border">
           {recentAlerts.map((a) => (
             <div

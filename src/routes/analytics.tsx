@@ -10,7 +10,7 @@ export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
       { title: "Analytics — MPLADS Guardian" },
-      { name: "description", content: "Risk analytics and data breakdowns for MPLADS monitoring." },
+      { name: "description", content: "Anomaly analytics and data breakdowns for MPLADS monitoring." },
     ],
   }),
   component: AnalyticsPage,
@@ -30,7 +30,7 @@ function AnalyticsPage() {
 
   return (
     <div className="space-y-5 fade-in-up">
-      <PageHeader title="Analytics" subtitle="Risk concentrations, delay patterns and cross-cutting metrics." />
+      <PageHeader title="Analytics" subtitle="Priority concentrations, delay patterns and cross-cutting metrics." />
 
       {/* concentrations */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -38,14 +38,14 @@ function AnalyticsPage() {
           <div key={c.scope} className="rounded-md border border-border bg-card px-4 py-3.5">
             <p className="label-meta">{c.scope} — Highest Risk</p>
             <p className="mt-1 text-[15px] font-semibold text-foreground">{c.name}</p>
-            <p className="mt-0.5 tnum text-[12px] text-risk-high font-medium">{c.highRisk} high-risk projects</p>
+            <p className="mt-0.5 tnum text-[12px] text-risk-high font-medium">{c.highRisk} projects requiring attention</p>
           </div>
         ))}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <BreakdownChart title="High-Risk Projects by State" data={data.byState} />
-        <BreakdownChart title="High-Risk Projects by Category" data={data.byCategory} />
+        <BreakdownChart title="Projects Requiring Attention by State" data={data.byState} />
+        <BreakdownChart title="Projects Requiring Attention by Category" data={data.byCategory} />
       </div>
 
       {/* avg delay */}

@@ -56,19 +56,17 @@ function OnboardingFlow() {
       desc: "MPLADS Guardian uses specialized analytical agents to examine different aspects of every project.",
     },
     {
-      label: "RISK ENGINE",
-      title: "From individual signals to a single risk view",
-      desc: "Each analytical agent produces evidence and an indicator strength. The risk engine combines these signals into an overall project risk score.",
+      label: "INVESTIGATION PRIORITY ENGINE",
+      title: "From individual signals to a single priority view",
+      desc: "Each analytical agent produces evidence and an indicator strength. The priority engine combines these signals into an overall investigation priority score.",
     },
-    {
       label: "INVESTIGATION",
-      title: "Understand why a project was flagged",
-      desc: "Every risk score is accompanied by the evidence that contributed to it. The system assists officers rather than replacing human judgement.",
+      title: "Understand why a project was prioritized",
+      desc: "Every priority score is accompanied by the evidence that contributed to it. The system assists officers rather than replacing human judgement.",
     },
-    {
       label: "MONITORING WORKSPACE",
       title: "From signals to action",
-      desc: "The monitoring workspace allows officers to monitor projects across regions, filter high-risk projects, investigate individual projects, review agent findings, analyze geographic patterns, track alerts, and generate investigation briefs.",
+      desc: "The monitoring workspace allows officers to monitor projects across regions, filter projects requiring attention, investigate individual projects, review agent findings, analyze geographic patterns, track alerts, and generate investigation briefs.",
     }
   ];
 
@@ -208,7 +206,7 @@ function VisualStep3() {
   return (
     <div className="rounded-lg border border-border bg-card shadow-sm overflow-hidden">
       <div className="bg-surface px-6 py-4 border-b border-border">
-        <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">Risk Calculation</span>
+        <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">Priority Calculation</span>
       </div>
       <div className="p-6">
         <div className="space-y-4 mb-6">
@@ -236,7 +234,7 @@ function VisualStep3() {
         
         <div className="border-t border-border pt-6 flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-[10px] font-semibold tracking-widest uppercase text-muted-foreground mb-1">Total Score</span>
+            <span className="text-[10px] font-semibold tracking-widest uppercase text-muted-foreground mb-1">Priority Score</span>
             <span className="text-3xl font-bold tnum">92 <span className="text-xl text-muted-foreground font-medium">/ 100</span></span>
           </div>
           <div className="flex flex-col items-end">
@@ -250,7 +248,7 @@ function VisualStep3() {
       </div>
       <div className="bg-surface px-6 py-3 border-t border-border">
         <p className="text-[11px] text-muted-foreground leading-relaxed">
-          The risk score represents the combined strength of detected indicators. It does not establish wrongdoing.
+          The priority score represents the combined strength of detected indicators. It does not establish wrongdoing.
         </p>
       </div>
     </div>
@@ -269,7 +267,7 @@ function VisualStep4() {
           </div>
           <div className="text-right">
             <div className="text-xl font-bold tnum">92 <span className="text-sm text-muted-foreground">/ 100</span></div>
-            <span className="text-[10px] font-semibold text-risk-critical uppercase">Risk Score</span>
+            <span className="text-[10px] font-semibold text-risk-critical uppercase">Investigation Priority</span>
           </div>
         </div>
       </div>

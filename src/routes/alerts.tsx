@@ -9,8 +9,8 @@ import { Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/alerts")({
   head: () => ({
     meta: [
-      { title: "Risk Alerts — MPLADS Guardian" },
-      { name: "description", content: "AI-generated risk alerts requiring officer review." },
+      { title: "Anomaly Alerts — MPLADS Guardian" },
+      { name: "description", content: "AI-generated anomaly signals requiring officer review." },
     ],
   }),
   component: AlertsPage,
@@ -30,8 +30,8 @@ function AlertsPage() {
   return (
     <div className="space-y-5 fade-in-up">
       <PageHeader
-        title="Risk Alerts"
-        subtitle="AI-generated risk signals requiring officer review."
+        title="Anomaly Alerts"
+        subtitle="AI-generated anomaly signals requiring officer review."
         meta={
           <span className="text-[12px] text-muted-foreground">
             {open} open · {inReview} in review

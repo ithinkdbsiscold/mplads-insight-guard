@@ -60,7 +60,7 @@ export function ProjectTable({
             <th className="px-4 py-2.5 text-muted-foreground font-medium">
               Progress
             </th>
-            <th className="px-4 py-2.5 text-muted-foreground font-medium">Risk</th>
+            <th className="px-4 py-2.5 text-muted-foreground font-medium">Priority</th>
             <th className="px-4 py-2.5 text-muted-foreground font-medium">Status</th>
           </tr>
         </thead>

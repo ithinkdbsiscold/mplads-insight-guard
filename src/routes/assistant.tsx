@@ -19,8 +19,8 @@ interface Message {
 }
 
 const SUGGESTIONS = [
-  "Which districts in Bihar have the most critical-risk projects?",
-  "Summarise the risk findings for MPL-1842.",
+  "Which districts in Bihar have the most immediate-review projects?",
+  "Summarise the priority findings for MPL-1842.",
   "Show projects where financial progress exceeds physical by more than 30%.",
   "What are the top delay categories this quarter?",
 ];
@@ -30,7 +30,7 @@ function AssistantPage() {
     {
       role: "assistant",
       content:
-        "Hello, I'm the MPLADS Guardian assistant. I can help you explore project data, risk patterns and findings across monitored states. What would you like to know?",
+        "Hello, I'm the MPLADS Guardian assistant. I can help you explore project data, anomaly patterns and findings across monitored states. What would you like to know?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -112,7 +112,7 @@ function AssistantPage() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about projects, risk patterns, or specific findings…"
+              placeholder="Ask about projects, anomaly patterns, or specific findings…"
               className="h-9 flex-1 rounded-md border border-border bg-card px-3 text-[13px] placeholder:text-subtle transition-colors focus:border-border-strong"
             />
             <Button type="submit" variant="primary" size="md" disabled={!input.trim()}>
