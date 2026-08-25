@@ -14,7 +14,7 @@ const router = createRouter({
     queryClient,
   },
   defaultPreload: "intent",
-  basepath: import.meta.env.BASE_URL,
+  basepath: import.meta.env.BASE_URL.replace(/\/$/, ""),
 });
 
 declare module "@tanstack/react-router" {

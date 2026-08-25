@@ -6,6 +6,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   base: "/mplads-insight-guard/",
+  build: {
+    outDir: "docs",
+  },
   plugins: [
     tailwindcss(),
     TanStackRouterVite(),
