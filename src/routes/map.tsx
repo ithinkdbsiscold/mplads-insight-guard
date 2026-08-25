@@ -7,7 +7,7 @@ export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
       { title: "Geographic Map — MPLADS Guardian" },
-      { name: "description", content: "Geographic distribution of MPLADS projects and risk hotspots." },
+      { name: "description", content: "Geographic distribution of MPLADS projects and priority hotspots." },
     ],
   }),
   component: MapPage,
@@ -29,7 +29,7 @@ function MapPage() {
     <div className="space-y-5 fade-in-up">
       <PageHeader
         title="Geographic Map"
-        subtitle="Spatial distribution of projects and risk hotspots across monitored states."
+        subtitle="Spatial distribution of projects and priority hotspots across monitored states."
       />
 
       {/* placeholder map area */}
@@ -57,8 +57,8 @@ function MapPage() {
               <tr className="border-b border-border text-left">
                 <th className="px-4 py-2.5 font-medium text-muted-foreground">State</th>
                 <th className="px-4 py-2.5 font-medium text-muted-foreground text-right">Total Projects</th>
-                <th className="px-4 py-2.5 font-medium text-muted-foreground text-right">High/Critical Risk</th>
-                <th className="px-4 py-2.5 font-medium text-muted-foreground text-right">% High Risk</th>
+                <th className="px-4 py-2.5 font-medium text-muted-foreground text-right">Requires Attention</th>
+                <th className="px-4 py-2.5 font-medium text-muted-foreground text-right">% Requiring Attention</th>
               </tr>
             </thead>
             <tbody>
@@ -81,7 +81,7 @@ function MapPage() {
 
       {/* high-risk project pins */}
       <Panel>
-        <PanelHeader title="High-Risk Project Locations" description={`${highRisk.length} projects at high or critical risk`} />
+        <PanelHeader title="Priority Hotspots Locations" description={`${highRisk.length} projects requiring attention`} />
         <div className="divide-y divide-border max-h-[360px] overflow-y-auto">
           {highRisk.slice(0, 20).map((p) => (
             <div key={p.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">

@@ -20,18 +20,18 @@ function SettingsPage() {
       <Panel>
         <PanelHeader title="Notification Preferences" />
         <div className="space-y-4 px-4 py-4">
-          <SettingToggle label="Email alerts for critical-risk projects" defaultChecked />
-          <SettingToggle label="Email digest — daily summary of new high-risk alerts" defaultChecked />
+          <SettingToggle label="Email alerts for projects requiring immediate review" defaultChecked />
+          <SettingToggle label="Email digest — daily summary of new anomaly alerts" defaultChecked />
           <SettingToggle label="Browser push notifications" defaultChecked={false} />
           <SettingToggle label="Slack integration notifications" defaultChecked={false} />
         </div>
       </Panel>
 
       <Panel>
-        <PanelHeader title="Risk Thresholds" />
-        <div className="space-y-4 px-4 py-4">
-          <ThresholdRow label="Critical threshold" value={85} unit="risk score" />
-          <ThresholdRow label="High threshold" value={65} unit="risk score" />
+        <PanelHeader title="Priority Thresholds" />
+        <div className="divide-y divide-border">
+          <ThresholdRow label="Immediate Review threshold" value={85} unit="priority score" />
+          <ThresholdRow label="High Priority threshold" value={65} unit="priority score" />
           <ThresholdRow label="Financial–physical mismatch alert" value={25} unit="percentage points" />
           <ThresholdRow label="Delay alert trigger" value={3} unit="months" />
         </div>
