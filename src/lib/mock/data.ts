@@ -14,6 +14,19 @@ export type AgentName =
   | "Geographic Agent"
   | "Compliance Agent";
 
+export interface MP {
+  id: string;
+  mpId: string;
+  mpName: string;
+  name: string;
+  house: "Lok Sabha" | "Rajya Sabha";
+  memberStatus: "Sitting" | "Former";
+  state: string;
+  constituency: string;
+  memberStartDate: string;
+  memberEndDate: string;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -203,6 +216,37 @@ export function riskLevelFromScore(score: number): RiskLevel {
   return "low";
 }
 
+
+export const mps: MP[] = [];
+for (const state of STATES) {
+  const districts = DISTRICTS[state] || [];
+  for (const dist of districts) {
+    mps.push({
+      id: `MP-${mps.length + 1}`,
+      name: `Shri ${dist} MP`,
+      house: "Lok Sabha",
+      memberStatus: "Sitting",
+      state: state,
+      constituency: CONSTITUENCIES[dist] || dist,
+      memberStartDate: "2019-05-23",
+      memberEndDate: "2024-05-23"
+    });
+  }
+}
+// Add some Rajya Sabha MPs
+for (const state of STATES) {
+  mps.push({
+    id: `MP-${mps.length + 1}`,
+    name: `Smt. ${state} RS Member`,
+    house: "Rajya Sabha",
+    memberStatus: "Sitting",
+    state: state,
+    constituency: state, // Rajya Sabha represents the state
+    memberStartDate: "2020-04-03",
+    memberEndDate: "2026-04-02"
+  });
+}
+
 function buildProjects(): Project[] {
   const rnd = seeded(42);
   const out: Project[] = [];
@@ -306,9 +350,15 @@ function buildProjects(): Project[] {
             : "ongoing";
     const base = STATE_COORDS[state]!;
     const [lat, lng] = base;
+    const constituency = CONSTITUENCIES[district] ?? district;
+    const possibleMps = mps.filter(m => m.state === state && (m.constituency === constituency || m.house === "Rajya Sabha"));
+    const mp = possibleMps[Math.floor(rnd() * possibleMps.length)] || mps[0];
+
 
     out.push({
       id: `MPL-${(1000 + Math.floor(rnd() * 8900)).toString()}`,
+      mpId: mp.id,
+      mpName: mp.name,
       name: NAMES[Math.floor(rnd() * NAMES.length)]!,
       state,
       district,

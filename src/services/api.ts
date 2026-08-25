@@ -11,6 +11,7 @@ import {
   agentFindingsByProject,
   alerts,
   dataSources,
+  mps,
   projects,
   riskContributorsByProject,
   riskTrend,
@@ -18,6 +19,7 @@ import {
   timelineByProject,
   type Alert,
   type AgentFinding,
+  type MP,
   type Project,
   type ProjectStatus,
   type RiskContributor,
@@ -30,6 +32,7 @@ export const API_BASE_URL = "/api/v1";
 export type {
   Alert,
   AgentFinding,
+  MP,
   Project,
   ProjectStatus,
   RiskContributor,
@@ -40,6 +43,7 @@ export type {
 export interface ProjectQuery {
   search?: string | undefined;
   state?: string | undefined;
+  mpId?: string | undefined;
   district?: string | undefined;
   constituency?: string | undefined;
   category?: string | undefined;
@@ -62,7 +66,9 @@ export interface Paged<T> {
 function matches(p: Project, q: ProjectQuery) {
   const s = q.search?.trim().toLowerCase();
   if (s && !`${p.id} ${p.name} ${p.district} ${p.state}`.toLowerCase().includes(s)) return false;
+  if (s && !`${p.id} ${p.name} ${p.mpName} ${p.district} ${p.state}`.toLowerCase().includes(s)) return false;
   if (q.state && p.state !== q.state) return false;
+  if (q.mpId && p.mpId !== q.mpId) return false;
   if (q.district && p.district !== q.district) return false;
   if (q.constituency && p.constituency !== q.constituency) return false;
   if (q.category && p.category !== q.category) return false;
@@ -126,6 +132,7 @@ export function getFilterOptions() {
   const uniq = (values: string[]) => Array.from(new Set(values)).sort();
   return {
     states: uniq(projects.map((p) => p.state)),
+    mps: mps,
     districts: uniq(projects.map((p) => p.district)),
     constituencies: uniq(projects.map((p) => p.constituency)),
     categories: uniq(projects.map((p) => p.category)),
@@ -253,4 +260,51 @@ export function getDataSources() {
 
 export function getSystemComponents() {
   return systemComponents;
+}
+
+export interface MpQuery {
+  search?: string;
+  state?: string;
+  house?: "Lok Sabha" | "Rajya Sabha" | "";
+  memberStatus?: "Sitting" | "Former" | "";
+}
+
+export function listMps(q: MpQuery = {}): Paged<MP> {
+  const filtered = mps.filter(m => {
+    if (q.search && !m.name.toLowerCase().includes(q.search.toLowerCase()) && !m.constituency.toLowerCase().includes(q.search.toLowerCase()) && !m.state.toLowerCase().includes(q.search.toLowerCase())) return false;
+    if (q.state && m.state !== q.state) return false;
+    if (q.house && m.house !== q.house) return false;
+    if (q.memberStatus && m.memberStatus !== q.memberStatus) return false;
+    return true;
+  });
+  return {
+    rows: filtered,
+    total: filtered.length,
+    page: 1,
+    pageSize: filtered.length,
+  };
+}
+
+export function getMp(id: string): MP | undefined {
+  return mps.find(m => m.id === id);
+}
+
+export function getMpStats(mpId: string) {
+  const mpProjects = projects.filter(p => p.mpId === mpId);
+  const total = mpProjects.length;
+  const completed = mpProjects.filter(p => p.status === "completed").length;
+  const ongoing = mpProjects.filter(p => p.status === "ongoing").length;
+  const delayed = mpProjects.filter(p => p.status === "delayed").length;
+  const attention = mpProjects.filter(p => p.riskLevel === "high" || p.riskLevel === "critical").length;
+  
+  const totalSanctioned = mpProjects.reduce((acc, p) => acc + p.sanctionedLakh, 0);
+  const totalReleased = mpProjects.reduce((acc, p) => acc + p.releasedLakh, 0);
+  const totalUtilized = mpProjects.reduce((acc, p) => acc + p.utilizedLakh, 0);
+  
+  const utilPct = totalSanctioned > 0 ? Math.round((totalUtilized / totalSanctioned) * 100) : 0;
+  
+  return {
+    total, completed, ongoing, delayed, attention,
+    totalSanctioned, totalReleased, totalUtilized, utilPct
+  };
 }

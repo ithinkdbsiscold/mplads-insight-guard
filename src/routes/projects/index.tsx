@@ -27,6 +27,7 @@ function ProjectsPage() {
   const opts = getFilterOptions();
   const [search, setSearch] = useState("");
   const [state, setState] = useState("");
+  const [mpId, setMpId] = useState("");
   const [category, setCategory] = useState("");
   const [risk, setRisk] = useState<RiskLevel | "">("");
   const [status, setStatus] = useState<ProjectStatus | "">("");
@@ -35,6 +36,7 @@ function ProjectsPage() {
   const result = listProjects({
     search: search || undefined,
     state: state || undefined,
+    mpId: mpId || undefined,
     category: category || undefined,
     risk: risk || undefined,
     status: status || undefined,
@@ -51,11 +53,14 @@ function ProjectsPage() {
         <TextField label="Search" placeholder="ID, name…" value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="w-[180px]" />
         <FilterSelect label="State" value={state}
-          onChange={(v) => { setState(v); setPage(1); }}
+          onChange={(v) => { setState(v); setMpId(""); setPage(1); }}
           options={opts.states.map((s) => ({ value: s, label: s }))} className="w-[150px]" />
+        <FilterSelect label="MP" value={mpId}
+          onChange={(v) => { setMpId(v); setPage(1); }}
+          options={opts.mps.filter(m => !state || m.state === state).map((m) => ({ value: m.id, label: m.name }))} className="w-[180px]" />
         <FilterSelect label="Category" value={category}
           onChange={(v) => { setCategory(v); setPage(1); }}
-          options={opts.categories.map((c) => ({ value: c, label: c }))} className="w-[170px]" />
+          options={opts.categories.map((c) => ({ value: c, label: c }))} className="w-[150px]" />
         <FilterSelect label="Priority Level" value={risk}
           onChange={(v) => { setRisk(v as RiskLevel | ""); setPage(1); }}
           options={["low","medium","high","critical"].map(r=>({value:r,label:r.charAt(0).toUpperCase()+r.slice(1)}))}

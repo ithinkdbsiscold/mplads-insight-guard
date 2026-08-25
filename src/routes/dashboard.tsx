@@ -31,12 +31,15 @@ import {
   getOverviewKpis,
   getRiskDistribution,
   getStatusDistribution,
-  getRiskTrend,
   listProjects,
   listAlerts,
   getFilterOptions,
+  getAnalytics,
+  listMps,
+  getMpStats,
   type RiskLevel,
 } from "@/services/api";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -80,6 +83,12 @@ function OverviewPage() {
     pageSize: 6,
   });
   const recentAlerts = listAlerts().slice(0, 5);
+  
+  const analytics = getAnalytics();
+  const topMps = listMps().rows
+    .map(mp => ({ ...mp, stats: getMpStats(mp.id) }))
+    .sort((a, b) => b.stats.total - a.stats.total)
+    .slice(0, 5);
 
   return (
     <div className="space-y-6 fade-in-up">
@@ -156,58 +165,61 @@ function OverviewPage() {
           </div>
         </Panel>
 
-        {/* status distribution */}
+        {/* Projects Requiring Attention by State */}
         <Panel>
-          <PanelHeader title="Project Status" description="Current execution status" />
-          <div className="flex items-center gap-6 px-4 py-4">
-            <ResponsiveContainer width={170} height={170}>
-              <PieChart>
-                <Pie
-                  data={statusDist}
-                  dataKey="value"
-                  nameKey="label"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={78}
-                  paddingAngle={2}
-                  strokeWidth={0}
-                >
-                  {statusDist.map((_, i) => (
-                    <Cell key={i} fill={STATUS_COLORS[i]} />
-                  ))}
-                </Pie>
+          <PanelHeader title="Requiring Attention by State" description="Top states by indicator density" />
+          <div className="px-4 py-4">
+            <ResponsiveContainer width="100%" height={170}>
+              <BarChart data={analytics.byState.slice(0, 5)} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
+                <CartesianGrid horizontal={false} stroke="#E2E8F0" />
+                <XAxis type="number" hide />
+                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#64748B" }} width={80} />
                 <Tooltip
-                  contentStyle={{
-                    fontSize: 12,
-                    borderRadius: 5,
-                    border: "1px solid oklch(0.914 0.004 260)",
-                  }}
-                  formatter={(value: number) => [value.toLocaleString("en-IN"), "Projects"]}
+                  cursor={{ fill: "transparent" }}
+                  contentStyle={{ fontSize: 12, borderRadius: 5, border: "1px solid #E2E8F0" }}
                 />
-              </PieChart>
+                <Bar dataKey="highRisk" fill={RISK_COLORS.high} radius={[0, 2, 2, 0]} barSize={16}>
+                  {analytics.byState.slice(0, 5).map((d, i) => (
+                    <Cell key={i} fill={RISK_COLORS.high} />
+                  ))}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
-            <div className="flex-1 space-y-2.5">
-              {statusDist.map((s, i) => (
-                <div key={s.status} className="flex items-center justify-between text-[12.5px]">
-                  <span className="flex items-center gap-2 text-muted-foreground">
-                    <span
-                      className="h-2.5 w-2.5 rounded-sm"
-                      style={{ backgroundColor: STATUS_COLORS[i] }}
-                    />
-                    {s.label}
-                  </span>
-                  <span className="tnum font-medium text-foreground">
-                    {s.value.toLocaleString("en-IN")}
-                  </span>
-                </div>
-              ))}
-            </div>
           </div>
         </Panel>
       </div>
 
-      {/* -------- risk trend -------- */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* -------- MP Activity -------- */}
+        <Panel>
+          <PanelHeader title="Members of Parliament" description="Most active by project count" />
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px] whitespace-nowrap">
+              <thead className="bg-surface">
+                <tr className="border-b border-border text-left">
+                  <th className="px-4 py-2 font-medium text-muted-foreground">MP Name</th>
+                  <th className="px-4 py-2 font-medium text-muted-foreground text-right">Projects</th>
+                  <th className="px-4 py-2 font-medium text-muted-foreground text-right">Completed</th>
+                  <th className="px-4 py-2 font-medium text-muted-foreground text-right">Attention</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {topMps.map((mp) => (
+                  <tr key={mp.id} className="transition-colors hover:bg-muted/30">
+                    <td className="px-4 py-2.5 font-medium text-foreground">
+                      <Link to={`/mps/${mp.id}`} className="hover:underline">{mp.name}</Link>
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-muted-foreground tnum">{mp.stats.total}</td>
+                    <td className="px-4 py-2.5 text-right text-muted-foreground tnum">{mp.stats.completed}</td>
+                    <td className="px-4 py-2.5 text-right font-medium text-risk-high tnum">{mp.stats.attention}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+
+        {/* -------- risk trend -------- */}
       <Panel>
         <PanelHeader
           title="Anomaly Trend"
@@ -284,6 +296,7 @@ function OverviewPage() {
           </ResponsiveContainer>
         </div>
       </Panel>
+      </div>
 
       {/* -------- attention table -------- */}
       <Panel>

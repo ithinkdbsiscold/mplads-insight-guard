@@ -13,16 +13,19 @@ import {
   Search,
   Settings,
   Table2,
+  Users,
+  PieChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { listAlerts } from "@/services/api";
 
 const primaryNav = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { to: "/mps", label: "Members of Parliament", icon: Users },
   { to: "/projects", label: "Projects", icon: Table2 },
-  { to: "/alerts", label: "Anomaly Alerts", icon: AlertTriangle },
+  { to: "/alerts", label: "Attention Queue", icon: AlertTriangle },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/map", label: "Geographic Map", icon: MapPinned },
+  { to: "/regional-insights", label: "Regional Insights", icon: PieChart },
   { to: "/assistant", label: "AI Assistant", icon: MessageSquareText },
 ] as const;
 
@@ -34,10 +37,11 @@ const adminNav = [
 
 const titles: Record<string, string> = {
   "/dashboard": "Overview",
+  "/mps": "Members of Parliament",
   "/projects": "Projects",
-  "/alerts": "Anomaly Alerts",
+  "/alerts": "Attention Queue",
   "/analytics": "Analytics",
-  "/map": "Geographic Map",
+  "/regional-insights": "Regional Insights",
   "/assistant": "AI Assistant",
   "/data-sources": "Data Sources",
   "/system-status": "System Status",

@@ -3,7 +3,7 @@ import { useState } from "react";
 import {
   PageHeader, Panel, PanelHeader, RiskBadge, FilterSelect, StatusPill,
 } from "@/components/ui-kit/primitives";
-import { listAlerts, type RiskLevel } from "@/services/api";
+import { listAlerts, getProject, type RiskLevel } from "@/services/api";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/alerts")({
@@ -58,22 +58,31 @@ function AlertsPage() {
           {all.length === 0 && (
             <p className="px-4 py-10 text-center text-[13px] text-muted-foreground">No alerts match filters.</p>
           )}
-          {all.map((a) => (
-            <div key={a.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/40">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="truncate text-[13px] font-medium text-foreground">{a.type}</p>
-                  <StatusDot status={a.status} />
+          {all.map((a) => {
+            const project = getProject(a.projectId);
+            return (
+              <div key={a.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/40">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="truncate text-[13px] font-medium text-foreground">{a.type}</p>
+                    <StatusDot status={a.status} />
+                  </div>
+                  <p className="mt-0.5 truncate text-[12px] text-muted-foreground">
+                    <Link to="/projects/$id" params={{ id: a.projectId }}
+                      className="text-primary hover:underline">{a.projectId}</Link>
+                    {" · "}{a.projectName}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] text-subtle">
+                    {project ? `${project.mpName} · ${project.district}, ${project.state}` : 'Unknown Location'}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] text-subtle">
+                    {a.agent} · {a.detectedLabel}
+                  </p>
                 </div>
-                <p className="mt-0.5 truncate text-[12px] text-muted-foreground">
-                  <Link to="/projects/$id" params={{ id: a.projectId }}
-                    className="text-primary hover:underline">{a.projectId}</Link>
-                  {" · "}{a.projectName} · {a.agent} · {a.detectedLabel}
-                </p>
+                <RiskBadge level={a.severity} />
               </div>
-              <RiskBadge level={a.severity} />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Panel>
     </div>

@@ -19,10 +19,11 @@ interface Message {
 }
 
 const SUGGESTIONS = [
-  "Which districts in Bihar have the most immediate-review projects?",
-  "Summarise the priority findings for MPL-1842.",
-  "Show projects where financial progress exceeds physical by more than 30%.",
-  "What are the top delay categories this quarter?",
+  "Show projects associated with Shri Patna MP.",
+  "Which MPs in Bihar have the most delayed projects?",
+  "Show projects requiring attention for Shri Lucknow MP.",
+  "Which constituencies have the highest number of delayed projects?",
+  "Why was project MPL-1842 prioritized for review?",
 ];
 
 function AssistantPage() {

@@ -10,7 +10,7 @@ import {
   type AgentFinding, type RiskContributor, type TimelineEvent,
 } from "@/services/api";
 import {
-  AlertTriangle, CheckCircle, Clock, Eye, ExternalLink, FileText,
+  AlertTriangle, CheckCircle, Clock, Eye, ExternalLink, FileText, User,
 } from "lucide-react";
 
 export const Route = createFileRoute("/projects/$id")({
@@ -53,6 +53,31 @@ function ProjectDetailPage() {
           </div>
         }
       />
+
+      {/* MP Information */}
+      {project.mpId && (
+        <div className="rounded-md border border-border bg-card px-5 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+          <div>
+            <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-1">Recommended By</p>
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <Link to={`/mps/${project.mpId}`} className="text-[15px] font-semibold text-foreground hover:underline">
+                {project.mpName}
+              </Link>
+            </div>
+          </div>
+          <div className="flex gap-4 md:text-right">
+            <div>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-0.5">State</p>
+              <p className="text-[13px] font-medium text-foreground">{project.state}</p>
+            </div>
+            <div>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-0.5">Constituency</p>
+              <p className="text-[13px] font-medium text-foreground">{project.constituency}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* top row: risk summary + financials */}
       <div className="grid gap-4 lg:grid-cols-3">

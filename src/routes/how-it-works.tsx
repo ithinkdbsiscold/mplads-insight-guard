@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, ArrowLeft, Database, Search, Clock, FileWarning, Map, CheckCircle2, AlertTriangle, Play, ChevronRight, Activity } from "lucide-react";
+import { ArrowRight, ArrowLeft, ArrowDown, Database, Search, Clock, FileWarning, Map, CheckCircle2, AlertTriangle, Play, ChevronRight, Activity } from "lucide-react";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
@@ -16,7 +16,7 @@ function OnboardingFlow() {
   const [step, setStep] = useState(1);
   const router = useRouter();
 
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   const nextStep = () => {
     if (step < totalSteps) setStep(step + 1);
@@ -32,12 +32,14 @@ function OnboardingFlow() {
       case 1:
         return <VisualStep1 />;
       case 2:
-        return <VisualStep2 />;
+        return <VisualStepMP />;
       case 3:
-        return <VisualStep3 />;
+        return <VisualStep2 />;
       case 4:
-        return <VisualStep4 />;
+        return <VisualStep3 />;
       case 5:
+        return <VisualStep4 />;
+      case 6:
         return <VisualStep5 />;
       default:
         return null;
@@ -48,7 +50,12 @@ function OnboardingFlow() {
     {
       label: "THE PROBLEM",
       title: "Monitoring thousands of projects",
-      desc: "MPLADS involves large volumes of project information, fund utilization, physical progress, timelines, implementing agencies, and geographic information. Finding the projects that need attention first can be difficult when reviewing large volumes of data manually.",
+      desc: "MPLADS involves large volumes of project information, fund utilization, physical progress, timelines, and implementing agencies. Finding the projects that need attention first can be difficult when reviewing large volumes of data manually.",
+    },
+    {
+      label: "MEMBERS OF PARLIAMENT",
+      title: "Follow the work from MP to project.",
+      desc: "MPLADS monitoring is organized around projects recommended by MPs. Officers can explore activity by State, District, Constituency, and MP to prioritize reviews without using a geographic visualization.",
     },
     {
       label: "MULTI-AGENT ANALYSIS",
@@ -68,7 +75,7 @@ function OnboardingFlow() {
     {
       label: "MONITORING WORKSPACE",
       title: "From signals to action",
-      desc: "The monitoring workspace allows officers to monitor projects across regions, filter projects requiring attention, investigate individual projects, review agent findings, analyze geographic patterns, track alerts, and generate investigation briefs.",
+      desc: "The monitoring workspace allows officers to monitor projects across regions, filter projects requiring attention, investigate individual projects, review agent findings, explore regional insights, track alerts, and generate investigation briefs.",
     }
   ];
 
@@ -176,6 +183,34 @@ function VisualStep1() {
             <span className="text-sm text-muted-foreground tnum">{item.val} / mo</span>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function VisualStepMP() {
+  return (
+    <div className="rounded-lg border border-border bg-card p-8 shadow-sm text-center">
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-1.5">
+          <span className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">Entity</span>
+          <div className="h-10 px-4 rounded-md border border-border bg-surface flex items-center justify-center font-medium text-[13px]">Member of Parliament</div>
+        </div>
+        <ArrowDown className="h-4 w-4 text-muted-foreground" />
+        <div className="flex flex-col items-center gap-1.5">
+          <span className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">Data</span>
+          <div className="h-10 px-4 rounded-md border border-border bg-surface flex items-center justify-center font-medium text-[13px]">Recommended Works</div>
+        </div>
+        <ArrowDown className="h-4 w-4 text-muted-foreground" />
+        <div className="flex flex-col items-center gap-1.5">
+          <span className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">Analysis</span>
+          <div className="h-10 px-4 rounded-md border border-border bg-surface flex items-center justify-center font-medium text-[13px]">Specialized AI Agents</div>
+        </div>
+        <ArrowDown className="h-4 w-4 text-muted-foreground" />
+        <div className="flex flex-col items-center gap-1.5">
+          <span className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">Outcome</span>
+          <div className="h-10 px-4 rounded-md border border-risk-high/30 bg-risk-high-soft text-risk-high flex items-center justify-center font-bold text-[13px]">Investigation Priority</div>
+        </div>
       </div>
     </div>
   );

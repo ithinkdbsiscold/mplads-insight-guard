@@ -16,9 +16,11 @@ import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DataSourcesRouteImport } from './routes/data-sources'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as MapRouteImport } from './routes/map'
+import { Route as RegionalInsightsRouteImport } from './routes/regional-insights'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SystemStatusRouteImport } from './routes/system-status'
+import { Route as MpsIndexRouteImport } from './routes/mps/index'
+import { Route as MpsIdRouteImport } from './routes/mps/$id'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectsIdRouteImport } from './routes/projects/$id'
 
@@ -57,9 +59,9 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
   path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MapRoute = MapRouteImport.update({
-  id: '/map',
-  path: '/map',
+const RegionalInsightsRoute = RegionalInsightsRouteImport.update({
+  id: '/regional-insights',
+  path: '/regional-insights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -70,6 +72,16 @@ const SettingsRoute = SettingsRouteImport.update({
 const SystemStatusRoute = SystemStatusRouteImport.update({
   id: '/system-status',
   path: '/system-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MpsIndexRoute = MpsIndexRouteImport.update({
+  id: '/mps/',
+  path: '/mps/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MpsIdRoute = MpsIdRouteImport.update({
+  id: '/mps/$id',
+  path: '/mps/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
@@ -91,10 +103,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/data-sources': typeof DataSourcesRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/map': typeof MapRoute
+  '/regional-insights': typeof RegionalInsightsRoute
   '/settings': typeof SettingsRoute
   '/system-status': typeof SystemStatusRoute
+  '/mps/$id': typeof MpsIdRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/mps/': typeof MpsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -105,10 +119,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/data-sources': typeof DataSourcesRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/map': typeof MapRoute
+  '/regional-insights': typeof RegionalInsightsRoute
   '/settings': typeof SettingsRoute
   '/system-status': typeof SystemStatusRoute
+  '/mps/$id': typeof MpsIdRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/mps': typeof MpsIndexRoute
   '/projects': typeof ProjectsIndexRoute
 }
 export interface FileRoutesById {
@@ -120,10 +136,12 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/data-sources': typeof DataSourcesRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/map': typeof MapRoute
+  '/regional-insights': typeof RegionalInsightsRoute
   '/settings': typeof SettingsRoute
   '/system-status': typeof SystemStatusRoute
+  '/mps/$id': typeof MpsIdRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/mps/': typeof MpsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
 }
 export interface FileRouteTypes {
@@ -136,10 +154,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/data-sources'
     | '/how-it-works'
-    | '/map'
+    | '/regional-insights'
     | '/settings'
     | '/system-status'
+    | '/mps/$id'
     | '/projects/$id'
+    | '/mps/'
     | '/projects/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -150,10 +170,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/data-sources'
     | '/how-it-works'
-    | '/map'
+    | '/regional-insights'
     | '/settings'
     | '/system-status'
+    | '/mps/$id'
     | '/projects/$id'
+    | '/mps'
     | '/projects'
   id:
     | '__root__'
@@ -164,10 +186,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/data-sources'
     | '/how-it-works'
-    | '/map'
+    | '/regional-insights'
     | '/settings'
     | '/system-status'
+    | '/mps/$id'
     | '/projects/$id'
+    | '/mps/'
     | '/projects/'
   fileRoutesById: FileRoutesById
 }
@@ -179,10 +203,12 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DataSourcesRoute: typeof DataSourcesRoute
   HowItWorksRoute: typeof HowItWorksRoute
-  MapRoute: typeof MapRoute
+  RegionalInsightsRoute: typeof RegionalInsightsRoute
   SettingsRoute: typeof SettingsRoute
   SystemStatusRoute: typeof SystemStatusRoute
+  MpsIdRoute: typeof MpsIdRoute
   ProjectsIdRoute: typeof ProjectsIdRoute
+  MpsIndexRoute: typeof MpsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
 }
 
@@ -237,11 +263,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/map': {
-      id: '/map'
-      path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof MapRouteImport
+    '/regional-insights': {
+      id: '/regional-insights'
+      path: '/regional-insights'
+      fullPath: '/regional-insights'
+      preLoaderRoute: typeof RegionalInsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -256,6 +282,20 @@ declare module '@tanstack/react-router' {
       path: '/system-status'
       fullPath: '/system-status'
       preLoaderRoute: typeof SystemStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mps/': {
+      id: '/mps/'
+      path: '/mps'
+      fullPath: '/mps/'
+      preLoaderRoute: typeof MpsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mps/$id': {
+      id: '/mps/$id'
+      path: '/mps/$id'
+      fullPath: '/mps/$id'
+      preLoaderRoute: typeof MpsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/': {
@@ -283,10 +323,12 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DataSourcesRoute: DataSourcesRoute,
   HowItWorksRoute: HowItWorksRoute,
-  MapRoute: MapRoute,
+  RegionalInsightsRoute: RegionalInsightsRoute,
   SettingsRoute: SettingsRoute,
   SystemStatusRoute: SystemStatusRoute,
+  MpsIdRoute: MpsIdRoute,
   ProjectsIdRoute: ProjectsIdRoute,
+  MpsIndexRoute: MpsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
 }
 export const routeTree = rootRouteImport
