@@ -37,6 +37,7 @@ import {
   getAnalytics,
   listMps,
   getMpStats,
+  getRiskTrend,
   type RiskLevel,
 } from "@/services/api";
 import { Link } from "@tanstack/react-router";
