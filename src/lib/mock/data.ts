@@ -273,9 +273,9 @@ function buildProjects(): Project[] {
   });
 
   for (let i = 0; i < 137; i++) {
-    const state = STATES[Math.floor(rnd() * STATES.length)];
-    const districts = DISTRICTS[state];
-    const district = districts[Math.floor(rnd() * districts.length)];
+    const state = STATES[Math.floor(rnd() * STATES.length)]!;
+    const districts = DISTRICTS[state]!;
+    const district = districts[Math.floor(rnd() * districts.length)]!;
     const sanctioned = Math.round((5 + rnd() * 40) * 10) / 10;
     const releasedRatio = 0.55 + rnd() * 0.45;
     const released = Math.round(sanctioned * releasedRatio * 10) / 10;
@@ -304,17 +304,17 @@ function buildProjects(): Project[] {
           : physical <= 5
             ? "pending"
             : "ongoing";
-    const base = STATE_COORDS[state];
+    const base = STATE_COORDS[state]!;
     const [lat, lng] = base;
 
     out.push({
       id: `MPL-${(1000 + Math.floor(rnd() * 8900)).toString()}`,
-      name: NAMES[Math.floor(rnd() * NAMES.length)],
+      name: NAMES[Math.floor(rnd() * NAMES.length)]!,
       state,
       district,
       constituency: CONSTITUENCIES[district] ?? district,
-      category: CATEGORIES[Math.floor(rnd() * CATEGORIES.length)],
-      agency: AGENCIES[Math.floor(rnd() * AGENCIES.length)],
+      category: CATEGORIES[Math.floor(rnd() * CATEGORIES.length)]!,
+      agency: AGENCIES[Math.floor(rnd() * AGENCIES.length)]!,
       sanctionedLakh: sanctioned,
       releasedLakh: released,
       utilizedLakh: utilized,

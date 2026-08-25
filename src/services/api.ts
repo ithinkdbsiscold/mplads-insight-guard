@@ -38,18 +38,18 @@ export type {
 };
 
 export interface ProjectQuery {
-  search?: string;
-  state?: string;
-  district?: string;
-  constituency?: string;
-  category?: string;
-  agency?: string;
-  risk?: RiskLevel | "";
-  status?: ProjectStatus | "";
-  sort?: keyof Project;
-  direction?: "asc" | "desc";
-  page?: number;
-  pageSize?: number;
+  search?: string | undefined;
+  state?: string | undefined;
+  district?: string | undefined;
+  constituency?: string | undefined;
+  category?: string | undefined;
+  agency?: string | undefined;
+  risk?: RiskLevel | "" | undefined;
+  status?: ProjectStatus | "" | undefined;
+  sort?: keyof Project | undefined;
+  direction?: "asc" | "desc" | undefined;
+  page?: number | undefined;
+  pageSize?: number | undefined;
 }
 
 export interface Paged<T> {
@@ -100,15 +100,15 @@ export function getProject(id: string): Project | undefined {
 }
 
 export function getAgentFindings(id: string): AgentFinding[] {
-  return agentFindingsByProject[id] ?? agentFindingsByProject["MPL-1842"];
+  return agentFindingsByProject[id] ?? agentFindingsByProject["MPL-1842"] ?? [];
 }
 
 export function getRiskContributors(id: string): RiskContributor[] {
-  return riskContributorsByProject[id] ?? riskContributorsByProject["MPL-1842"];
+  return riskContributorsByProject[id] ?? riskContributorsByProject["MPL-1842"] ?? [];
 }
 
 export function getTimeline(id: string): TimelineEvent[] {
-  return timelineByProject[id] ?? timelineByProject["MPL-1842"];
+  return timelineByProject[id] ?? timelineByProject["MPL-1842"] ?? [];
 }
 
 export function listAlerts(filter?: { severity?: RiskLevel; resolved?: boolean }): Alert[] {
@@ -170,7 +170,7 @@ export function getOverviewKpis() {
 
 export function getRiskDistribution() {
   const counts: Record<RiskLevel, number> = { low: 0, medium: 0, high: 0, critical: 0 };
-  projects.forEach((p) => (counts[p.riskLevel] += 1));
+  projects.forEach((p) => { counts[p.riskLevel] += 1; });
   const scale = 24582 / projects.length;
   return (["low", "medium", "high", "critical"] as RiskLevel[]).map((level) => ({
     level,
@@ -186,7 +186,7 @@ export function getStatusDistribution() {
     delayed: 0,
     pending: 0,
   };
-  projects.forEach((p) => (counts[p.status] += 1));
+  projects.forEach((p) => { counts[p.status] += 1; });
   const scale = 24582 / projects.length;
   return (["completed", "ongoing", "delayed", "pending"] as ProjectStatus[]).map((status) => ({
     status,

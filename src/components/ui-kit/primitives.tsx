@@ -11,7 +11,7 @@ export function Panel({
 }: React.HTMLAttributes<HTMLDivElement> & { children: ReactNode }) {
   return (
     <section
-      className={cn("rounded-md border border-border bg-card", className)}
+      className={cn("rounded-[3px] border border-border bg-card", className)}
       {...rest}
     >
       {children}
@@ -40,7 +40,7 @@ export function PanelHeader({
       <div className="min-w-0">
         <h2 className="text-[13.5px] font-semibold tracking-[-0.005em] text-foreground">{title}</h2>
         {description ? (
-          <p className="mt-0.5 text-[12.5px] leading-snug text-muted-foreground">{description}</p>
+          <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{description}</p>
         ) : null}
       </div>
       {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
@@ -62,7 +62,7 @@ export function PageHeader({
   return (
     <div className="grid gap-3 border-b border-border pb-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
       <div className="min-w-0">
-        <h1 className="text-[20px] font-semibold tracking-[-0.015em] text-foreground">{title}</h1>
+        <h1 className="text-[20px] font-bold tracking-[-0.015em] text-foreground">{title}</h1>
         {subtitle ? (
           <p className="mt-1 max-w-2xl text-[13px] text-muted-foreground">{subtitle}</p>
         ) : null}
@@ -78,7 +78,7 @@ export function PageHeader({
 /* ---------------------------------- buttons -------------------------------- */
 
 const buttonBase =
-  "inline-flex items-center justify-center gap-1.5 rounded-[5px] text-[12.5px] font-medium transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center gap-1.5 rounded-[3px] text-[12.5px] font-medium transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50";
 
 export function Button({
   variant = "default",
@@ -149,7 +149,7 @@ export function RiskBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-[4px] border px-1.5 py-0.5 text-[11.5px] font-medium",
+        "inline-flex items-center gap-1.5 rounded-[2px] border px-1.5 py-0.5 text-[11px] font-semibold",
         m.bg,
         m.border,
         m.text,
@@ -189,7 +189,7 @@ export function StatusPill({ status }: { status: ProjectStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-[4px] border px-1.5 py-0.5 text-[11.5px] font-medium",
+        "inline-flex items-center rounded-[2px] border px-1.5 py-0.5 text-[11px] font-semibold",
         m.className,
       )}
     >
@@ -211,8 +211,8 @@ export function StatusDot({
     error: { dot: "bg-risk-critical", text: "text-risk-critical" },
   } as const;
   return (
-    <span className={cn("inline-flex items-center gap-1.5 text-[12.5px] font-medium", tones[tone].text)}>
-      <span aria-hidden className={cn("h-[7px] w-[7px] rounded-full", tones[tone].dot)} />
+    <span className={cn("inline-flex items-center gap-1.5 text-[12px] font-medium", tones[tone].text)}>
+      <span aria-hidden className={cn("h-[6px] w-[6px] rounded-full", tones[tone].dot)} />
       {label}
     </span>
   );
@@ -241,7 +241,7 @@ export function FilterSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 min-w-0 rounded-[5px] border border-border bg-card px-2 text-[12.5px] text-foreground transition-colors hover:border-border-strong"
+        className="h-8 min-w-0 rounded-[3px] border border-border bg-card px-2 text-[12.5px] text-foreground transition-colors hover:border-border-strong"
       >
         <option value="">{placeholder}</option>
         {options.map((o) => (
@@ -263,7 +263,7 @@ export function TextField({
     <label className={cn("flex min-w-0 flex-col gap-1", className)}>
       <span className="label-meta">{label}</span>
       <input
-        className="h-8 min-w-0 rounded-[5px] border border-border bg-card px-2 text-[12.5px] text-foreground placeholder:text-subtle transition-colors hover:border-border-strong"
+        className="h-8 min-w-0 rounded-[3px] border border-border bg-card px-2 text-[12.5px] text-foreground placeholder:text-subtle transition-colors hover:border-border-strong"
         {...rest}
       />
     </label>
