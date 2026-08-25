@@ -60,10 +60,12 @@ function OnboardingFlow() {
       title: "From individual signals to a single priority view",
       desc: "Each analytical agent produces evidence and an indicator strength. The priority engine combines these signals into an overall investigation priority score.",
     },
+    {
       label: "INVESTIGATION",
       title: "Understand why a project was prioritized",
       desc: "Every priority score is accompanied by the evidence that contributed to it. The system assists officers rather than replacing human judgement.",
     },
+    {
       label: "MONITORING WORKSPACE",
       title: "From signals to action",
       desc: "The monitoring workspace allows officers to monitor projects across regions, filter projects requiring attention, investigate individual projects, review agent findings, analyze geographic patterns, track alerts, and generate investigation briefs.",
