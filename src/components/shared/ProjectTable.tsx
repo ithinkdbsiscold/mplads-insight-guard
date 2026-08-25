@@ -39,7 +39,18 @@ export function ProjectTable({
             <th className="px-4 py-2.5 text-muted-foreground font-medium min-w-[180px]">
               Project
             </th>
-            {showDistrict && !compact && (
+            <th className="px-4 py-2.5 text-muted-foreground font-medium min-w-[120px]">
+              MP
+            </th>
+            <th className="hidden px-4 py-2.5 text-muted-foreground font-medium lg:table-cell">
+              State
+            </th>
+            {!compact && (
+              <th className="hidden px-4 py-2.5 text-muted-foreground font-medium xl:table-cell">
+                Constituency
+              </th>
+            )}
+            {showDistrict && (
               <th className="hidden px-4 py-2.5 text-muted-foreground font-medium lg:table-cell">
                 District
               </th>
@@ -52,7 +63,7 @@ export function ProjectTable({
             <th className="px-4 py-2.5 text-muted-foreground font-medium text-right">
               Sanctioned
             </th>
-            {!compact && (
+            {compact && (
               <th className="hidden px-4 py-2.5 text-muted-foreground font-medium text-right sm:table-cell">
                 Utilised
               </th>
@@ -85,9 +96,26 @@ export function ProjectTable({
               <td className="px-4 py-2.5 max-w-[220px] truncate text-foreground">
                 {p.name}
               </td>
-              {showDistrict && !compact && (
+              <td className="px-4 py-2.5 max-w-[150px] truncate">
+                <Link
+                  to="/mps/$id"
+                  params={{ id: p.mpId }}
+                  className="text-foreground hover:underline hover:text-primary transition-colors"
+                >
+                  {p.mpName}
+                </Link>
+              </td>
+              <td className="hidden px-4 py-2.5 text-muted-foreground lg:table-cell">
+                {p.state}
+              </td>
+              {!compact && (
+                <td className="hidden px-4 py-2.5 text-muted-foreground xl:table-cell">
+                  {p.constituency || "-"}
+                </td>
+              )}
+              {showDistrict && (
                 <td className="hidden px-4 py-2.5 text-muted-foreground lg:table-cell">
-                  {p.district}, {p.state}
+                  {p.district}
                 </td>
               )}
               {!compact && (
@@ -98,7 +126,7 @@ export function ProjectTable({
               <td className="px-4 py-2.5 text-right tnum text-foreground">
                 {lakh(p.sanctionedLakh)}
               </td>
-              {!compact && (
+              {compact && (
                 <td className="hidden px-4 py-2.5 text-right tnum text-muted-foreground sm:table-cell">
                   {lakh(p.utilizedLakh)}
                 </td>

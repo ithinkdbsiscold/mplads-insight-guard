@@ -74,11 +74,13 @@ function OverviewPage() {
   const filterOpts = getFilterOptions();
 
   const [stateFilter, setStateFilter] = useState("");
+  const [mpFilter, setMpFilter] = useState("");
   const [riskFilter, setRiskFilter] = useState<RiskLevel | "">("");
 
   const attentionProjects = listProjects({
     risk: riskFilter || undefined,
     state: stateFilter || undefined,
+    mpId: mpFilter || undefined,
     sort: "riskScore",
     direction: "desc",
     pageSize: 6,
@@ -98,9 +100,16 @@ function OverviewPage() {
         <FilterSelect
           label="State"
           value={stateFilter}
-          onChange={setStateFilter}
+          onChange={(v) => { setStateFilter(v); setMpFilter(""); }}
           options={filterOpts.states.map((s) => ({ value: s, label: s }))}
           className="w-[160px]"
+        />
+        <FilterSelect
+          label="MP"
+          value={mpFilter}
+          onChange={setMpFilter}
+          options={filterOpts.mps.filter(m => !stateFilter || m.state === stateFilter).map((m) => ({ value: m.id, label: m.name }))}
+          className="w-[180px]"
         />
         <FilterSelect
           label="Priority Level"

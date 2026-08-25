@@ -54,35 +54,85 @@ function AlertsPage() {
 
       <Panel>
         <PanelHeader title="Alerts" description={`${all.length} alerts matching filters`} />
-        <div className="divide-y divide-border">
-          {all.length === 0 && (
-            <p className="px-4 py-10 text-center text-[13px] text-muted-foreground">No alerts match filters.</p>
-          )}
-          {all.map((a) => {
-            const project = getProject(a.projectId);
-            return (
-              <div key={a.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/40">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="truncate text-[13px] font-medium text-foreground">{a.type}</p>
-                    <StatusDot status={a.status} />
-                  </div>
-                  <p className="mt-0.5 truncate text-[12px] text-muted-foreground">
-                    <Link to="/projects/$id" params={{ id: a.projectId }}
-                      className="text-primary hover:underline">{a.projectId}</Link>
-                    {" · "}{a.projectName}
-                  </p>
-                  <p className="mt-0.5 truncate text-[11px] text-subtle">
-                    {project ? `${project.mpName} · ${project.district}, ${project.state}` : 'Unknown Location'}
-                  </p>
-                  <p className="mt-0.5 truncate text-[11px] text-subtle">
-                    {a.agent} · {a.detectedLabel}
-                  </p>
-                </div>
-                <RiskBadge level={a.severity} />
-              </div>
-            );
-          })}
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12.5px]">
+            <thead>
+              <tr className="border-b border-border text-left">
+                <th className="px-4 py-2.5 text-muted-foreground font-medium">Priority</th>
+                <th className="px-4 py-2.5 text-muted-foreground font-medium">Project</th>
+                <th className="px-4 py-2.5 text-muted-foreground font-medium">MP</th>
+                <th className="hidden px-4 py-2.5 text-muted-foreground font-medium lg:table-cell">State</th>
+                <th className="hidden px-4 py-2.5 text-muted-foreground font-medium lg:table-cell">District</th>
+                <th className="px-4 py-2.5 text-muted-foreground font-medium">Indicator</th>
+                <th className="hidden px-4 py-2.5 text-muted-foreground font-medium md:table-cell">Detected</th>
+                <th className="px-4 py-2.5 text-muted-foreground font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {all.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="px-4 py-10 text-center text-[13px] text-muted-foreground">
+                    No alerts match filters.
+                  </td>
+                </tr>
+              )}
+              {all.map((a, i) => {
+                const project = getProject(a.projectId);
+                return (
+                  <tr
+                    key={a.id}
+                    className={`border-b border-border transition-colors hover:bg-accent/50 ${
+                      i % 2 === 0 ? "bg-card" : "bg-background"
+                    }`}
+                  >
+                    <td className="px-4 py-2.5">
+                      <RiskBadge level={a.severity} />
+                    </td>
+                    <td className="px-4 py-2.5 max-w-[200px] truncate text-foreground">
+                      <div className="flex flex-col">
+                        <Link
+                          to="/projects/$id"
+                          params={{ id: a.projectId }}
+                          className="tnum text-primary font-medium hover:underline"
+                        >
+                          {a.projectId}
+                        </Link>
+                        <span className="text-[11px] text-muted-foreground truncate">{a.projectName}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2.5 max-w-[150px] truncate">
+                      {project ? (
+                        <Link
+                          to="/mps/$id"
+                          params={{ id: project.mpId }}
+                          className="text-foreground hover:underline hover:text-primary transition-colors"
+                        >
+                          {project.mpName}
+                        </Link>
+                      ) : (
+                        <span className="text-muted-foreground">Unknown</span>
+                      )}
+                    </td>
+                    <td className="hidden px-4 py-2.5 text-muted-foreground lg:table-cell">
+                      {project?.state || "Unknown"}
+                    </td>
+                    <td className="hidden px-4 py-2.5 text-muted-foreground lg:table-cell">
+                      {project?.district || "Unknown"}
+                    </td>
+                    <td className="px-4 py-2.5 max-w-[200px] truncate text-foreground">
+                      {a.type}
+                    </td>
+                    <td className="hidden px-4 py-2.5 text-muted-foreground md:table-cell">
+                      {a.detectedLabel}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <StatusDot status={a.status} />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </Panel>
     </div>
