@@ -27,6 +27,13 @@ def _is_sqlite(url: str) -> bool:
 
 def _make_engine():
     url = settings.database_url
+    
+    # Force the modern psycopg 3 driver for Render/Supabase standard Postgres URLs
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql+psycopg://", 1)
+    elif url.startswith("postgresql://"):
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+
     kwargs = {}
 
     if _is_sqlite(url):
