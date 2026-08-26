@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   Activity,
@@ -15,6 +15,7 @@ import {
   Table2,
   Users,
   PieChart,
+  Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useData } from "@/lib/DataContext";
@@ -89,6 +90,7 @@ function NavList({ onNavigate }: { onNavigate?: (() => void) | undefined }) {
 }
 
 function SidebarBody({ onNavigate }: { onNavigate?: (() => void) | undefined }) {
+  const nav = useNavigate();
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <div className="flex items-center gap-3 border-b border-sidebar-border px-4 py-3.5">
@@ -107,6 +109,19 @@ function SidebarBody({ onNavigate }: { onNavigate?: (() => void) | undefined }) 
 
       <NavList onNavigate={onNavigate} />
 
+      <div className="border-t border-sidebar-border px-2 py-2">
+        <button
+          onClick={() => {
+            localStorage.removeItem("mplads_guardian_onboarding_completed");
+            nav({ to: "/get-started" });
+            onNavigate?.();
+          }}
+          className="flex w-full items-center gap-2.5 rounded-[3px] px-2.5 py-[7px] text-[12px] text-sidebar-muted transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        >
+          <Info aria-hidden className="h-[14px] w-[14px] shrink-0 opacity-70" />
+          <span>About MPLADS Guardian</span>
+        </button>
+      </div>
     </div>
   );
 }

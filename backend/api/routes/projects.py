@@ -78,7 +78,7 @@ def list_projects(
         "total": total,
         "page": page,
         "page_size": page_size,
-        "pages": (total + page_size - 1) // page_size,
+        "total_pages": (total + page_size - 1) // page_size,
         "items": [_work_dict(w) for w in items],
     }
 

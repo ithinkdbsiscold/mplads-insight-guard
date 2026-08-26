@@ -14,6 +14,7 @@ import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DataSourcesRouteImport } from './routes/data-sources'
+import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as RegionalInsightsRouteImport } from './routes/regional-insights'
 import { Route as SystemStatusRouteImport } from './routes/system-status'
 import { Route as MpsIndexRouteImport } from './routes/mps/index'
@@ -44,6 +45,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const DataSourcesRoute = DataSourcesRouteImport.update({
   id: '/data-sources',
   path: '/data-sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GetStartedRoute = GetStartedRouteImport.update({
+  id: '/get-started',
+  path: '/get-started',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegionalInsightsRoute = RegionalInsightsRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/data-sources': typeof DataSourcesRoute
+  '/get-started': typeof GetStartedRoute
   '/regional-insights': typeof RegionalInsightsRoute
   '/system-status': typeof SystemStatusRoute
   '/mps/$id': typeof MpsIdRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/data-sources': typeof DataSourcesRoute
+  '/get-started': typeof GetStartedRoute
   '/regional-insights': typeof RegionalInsightsRoute
   '/system-status': typeof SystemStatusRoute
   '/mps/$id': typeof MpsIdRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/data-sources': typeof DataSourcesRoute
+  '/get-started': typeof GetStartedRoute
   '/regional-insights': typeof RegionalInsightsRoute
   '/system-status': typeof SystemStatusRoute
   '/mps/$id': typeof MpsIdRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/data-sources'
+    | '/get-started'
     | '/regional-insights'
     | '/system-status'
     | '/mps/$id'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/data-sources'
+    | '/get-started'
     | '/regional-insights'
     | '/system-status'
     | '/mps/$id'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/data-sources'
+    | '/get-started'
     | '/regional-insights'
     | '/system-status'
     | '/mps/$id'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   DashboardRoute: typeof DashboardRoute
   DataSourcesRoute: typeof DataSourcesRoute
+  GetStartedRoute: typeof GetStartedRoute
   RegionalInsightsRoute: typeof RegionalInsightsRoute
   SystemStatusRoute: typeof SystemStatusRoute
   MpsIdRoute: typeof MpsIdRoute
@@ -208,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/data-sources'
       fullPath: '/data-sources'
       preLoaderRoute: typeof DataSourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/get-started': {
+      id: '/get-started'
+      path: '/get-started'
+      fullPath: '/get-started'
+      preLoaderRoute: typeof GetStartedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/regional-insights': {
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   DashboardRoute: DashboardRoute,
   DataSourcesRoute: DataSourcesRoute,
+  GetStartedRoute: GetStartedRoute,
   RegionalInsightsRoute: RegionalInsightsRoute,
   SystemStatusRoute: SystemStatusRoute,
   MpsIdRoute: MpsIdRoute,

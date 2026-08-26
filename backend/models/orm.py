@@ -29,6 +29,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
@@ -56,6 +57,9 @@ class MP(Base):
     This makes the ID stable across runs even if the database is wiped.
     """
     __tablename__ = "mps"
+    __table_args__ = (
+        Index("ix_mp_house_state", "house", "state"),
+    )
 
     mp_id        = Column(String(16), primary_key=True)
     name         = Column(String(255), nullable=False, index=True)
@@ -90,6 +94,8 @@ class Allocation(Base):
     __table_args__ = (
         UniqueConstraint("house", "ls_term", "mp_name", "constituency",
                          name="uq_allocation_scope"),
+        Index("ix_alloc_house_term", "house", "ls_term"),
+        Index("ix_alloc_mp_house_term", "mp_id", "house", "ls_term"),
     )
 
     allocation_id    = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -136,6 +142,9 @@ class Work(Base):
     __table_args__ = (
         UniqueConstraint("house", "ls_term", "state", "work_id",
                          name="uq_work_scope"),
+        Index("ix_work_house_term", "house", "ls_term"),
+        Index("ix_work_house_term_state", "house", "ls_term", "state"),
+        Index("ix_work_mp_house_term", "mp_id", "house", "ls_term"),
     )
 
     id                  = Column(Integer, primary_key=True, autoincrement=True)
@@ -183,6 +192,12 @@ class Expenditure(Base):
     Do NOT aggregate — individual records are needed by the Payment Pattern Agent.
     """
     __tablename__ = "expenditures"
+    __table_args__ = (
+        Index("ix_exp_house_term", "house", "ls_term"),
+        Index("ix_exp_house_term_state", "house", "ls_term", "state"),
+        Index("ix_exp_mp_house_term", "mp_id", "house", "ls_term"),
+        Index("ix_exp_work_id", "work_id"),
+    )
 
     expenditure_id      = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     work_id             = Column(Integer, ForeignKey("works.work_id"), nullable=True, index=True)

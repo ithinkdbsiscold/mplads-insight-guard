@@ -77,7 +77,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const isPublicRoute = pathname === "/" || pathname === "/how-it-works" || pathname === "/login";
+  const isPublicRoute = pathname === "/" || pathname === "/get-started" || pathname === "/how-it-works" || pathname === "/login";
 
   return (
     <QueryClientProvider client={queryClient}>

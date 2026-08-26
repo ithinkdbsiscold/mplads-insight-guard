@@ -30,7 +30,10 @@ pip install -r requirements.txt
 cp .env.example .env
 # (Edit .env if needed — defaults work for local SQLite development)
 
-# 6. Start the API server
+# 6. Apply database migrations
+alembic upgrade head
+
+# 7. Start the API server
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -150,10 +153,22 @@ See `.env.example` for the complete list. Key variables:
 ## Database
 
 **Local development:** SQLite (no setup required, file created automatically)
+`DATABASE_URL=sqlite:///./data/guardian.db`
 
-**Production:** Set `DATABASE_URL=postgresql://user:password@host/db` in `.env`
+**Production:** Supabase PostgreSQL
+Set `DATABASE_URL=postgresql+psycopg://user:password@host/db` in `.env`
 
-Tables are created automatically on startup via `create_all_tables()`.
+### Alembic Migrations
+The backend uses Alembic to manage database migrations safely. Do not use `Base.metadata.create_all()` in production.
+- **Initialize DB / Upgrade to latest:** `alembic upgrade head`
+- **Create new migration (after modifying `models/orm.py`):** `alembic revision --autogenerate -m "Description"`
+
+### Data Migration (SQLite to PostgreSQL)
+To migrate existing SQLite data to the production Supabase PostgreSQL without data loss:
+1. Ensure `DATABASE_URL` in `.env` is set to your Postgres string.
+2. Ensure you have the `data/guardian.db` file present.
+3. Run `python scripts/migrate_sqlite_to_postgres.py`
+This script safely batch inserts all MPs, Allocations, Works, and Expenditures into Postgres, skipping existing primary keys.
 
 ---
 
@@ -189,7 +204,16 @@ The backend can be deployed on any Python hosting platform:
 - **Fly.io** (free tier available)
 - Any VPS with `uvicorn app.main:app --host 0.0.0.0 --port 8000`
 
-Set `DATABASE_URL` to a PostgreSQL connection string in production.
+Set `DATABASE_URL` to a PostgreSQL connection string in production. Make sure the connection pool matches the deployment scale.
+
+### Supabase Setup
+1. Create a Supabase project.
+2. Obtain the database connection string from **Database -> Connection Pooling**. (Usually starting with `postgresql://`).
+3. Replace `postgresql://` with `postgresql+psycopg://` for SQLAlchemy compatibility.
+4. Add to `.env` or the hosting provider's environment variables.
+5. Run `alembic upgrade head` to set up tables.
+6. (Optional) Run `python scripts/migrate_sqlite_to_postgres.py` to copy data.
+7. Start server: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
 The frontend reads the backend URL from:
 ```

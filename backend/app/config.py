@@ -29,10 +29,11 @@ class Settings(BaseSettings):
     project_name:  str = "MPLADS Guardian"
     version:       str = "0.1.0"
     debug:         bool = False
+    environment:   str = "development"
 
     # ── CORS ─────────────────────────────────────────────────────────────────
     # Comma-separated list of allowed origins, e.g. "http://localhost:5173,https://myapp.vercel.app"
-    allowed_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_origins: str = "http://localhost:5173,http://localhost:3000,https://mplads-insight-guard.vercel.app"
 
     # ── Ingestion ────────────────────────────────────────────────────────────
     raw_data_dir:        str = "./data/raw"
@@ -48,7 +49,7 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins_list(self) -> list[str]:
-        return [o.strip() for o in self.allowed_origins.split(",") if o.strip()]
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
     @property
     def raw_data_path(self) -> Path:
