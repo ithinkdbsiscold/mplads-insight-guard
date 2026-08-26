@@ -7,7 +7,6 @@
     "start": "vite dev",
     "dev": "vite dev",
     "build": "vite build",
-    "postbuild": "node -e \"require('fs').copyFileSync('docs/index.html', 'docs/404.html'); require('fs').writeFileSync('docs/.nojekyll', '')\"",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
