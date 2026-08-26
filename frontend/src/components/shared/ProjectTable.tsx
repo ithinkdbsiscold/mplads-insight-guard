@@ -1,0 +1,195 @@
+import { Link } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
+import { cr, pct } from "@/lib/format";
+import {
+  StatusPill,
+} from "@/components/ui-kit/primitives";
+
+interface ProjectTableProps {
+  rows: any[];
+  compact?: boolean;
+  className?: string;
+  showDistrict?: boolean;
+  showMp?: boolean;
+}
+
+export function ProjectTable({
+  rows,
+  compact = false,
+  className,
+  showDistrict = true,
+  showMp = true,
+}: ProjectTableProps) {
+  if (rows.length === 0) {
+    return (
+      <div className="px-4 py-10 text-center text-[13px] text-muted-foreground">
+        No projects match the current filters.
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn("overflow-x-auto", className)}>
+      <table className="w-full text-[12.5px]">
+        <thead>
+          <tr className="border-b border-border text-left">
+            <th className="px-4 py-2.5 text-muted-foreground font-medium min-w-[180px]">
+              Project
+            </th>
+            {showMp && (
+              <th className="px-4 py-2.5 text-muted-foreground font-medium min-w-[120px]">
+                MP
+              </th>
+            )}
+            <th className="hidden px-4 py-2.5 text-muted-foreground font-medium lg:table-cell">
+              State
+            </th>
+            {!compact && (
+              <th className="hidden px-4 py-2.5 text-muted-foreground font-medium xl:table-cell">
+                Constituency
+              </th>
+            )}
+            {showDistrict && (
+              <th className="hidden px-4 py-2.5 text-muted-foreground font-medium lg:table-cell">
+                District
+              </th>
+            )}
+            {!compact && (
+              <th className="hidden px-4 py-2.5 text-muted-foreground font-medium md:table-cell">
+                Category
+              </th>
+            )}
+            <th className="px-4 py-2.5 text-muted-foreground font-medium text-right">
+              Recommended (₹)
+            </th>
+            {compact && (
+              <th className="hidden px-4 py-2.5 text-muted-foreground font-medium text-right sm:table-cell">
+                Final (₹)
+              </th>
+            )}
+            <th className="px-4 py-2.5 text-muted-foreground font-medium">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((p, i) => (
+            <tr
+              key={p.id}
+              className={cn(
+                "border-b border-border transition-colors hover:bg-accent/50",
+                i % 2 === 0 ? "bg-card" : "bg-background",
+              )}
+            >
+              <td className="px-4 py-2.5 max-w-[220px] truncate text-foreground">
+                <Link
+                  to="/projects/$id"
+                  params={{ id: String(p.id) }}
+                  className="font-medium text-primary hover:underline"
+                >
+                  {p.work_description}
+                </Link>
+              </td>
+              {showMp && (
+                <td className="px-4 py-2.5 max-w-[150px] truncate">
+                  <Link
+                    to="/mps/$id"
+                    params={{ id: p.mp_id }}
+                    className="text-foreground hover:underline hover:text-primary transition-colors"
+                  >
+                    {p.mp_name}
+                  </Link>
+                </td>
+              )}
+              <td className="hidden px-4 py-2.5 text-muted-foreground lg:table-cell">
+                {p.state}
+              </td>
+              {!compact && (
+                <td className="hidden px-4 py-2.5 text-muted-foreground xl:table-cell">
+                  {p.constituency || "-"}
+                </td>
+              )}
+              {showDistrict && (
+                <td className="hidden px-4 py-2.5 text-muted-foreground lg:table-cell">
+                  {p.district || "-"}
+                </td>
+              )}
+              {!compact && (
+                <td className="hidden px-4 py-2.5 text-muted-foreground md:table-cell">
+                  {p.work_category}
+                </td>
+              )}
+              <td className="px-4 py-2.5 text-right tnum text-foreground">
+                {cr(p.recommended_amount || 0)}
+              </td>
+              {compact && (
+                <td className="hidden px-4 py-2.5 text-right tnum text-muted-foreground sm:table-cell">
+                  {p.work_status === 'Completed' ? cr(p.final_amount || 0) : "-"}
+                </td>
+              )}
+              <td className="px-4 py-2.5">
+                <StatusPill status={p.work_status} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function Pagination({
+  page,
+  pageSize,
+  total,
+  onPageChange,
+}: {
+  page: number;
+  pageSize: number;
+  total: number;
+  onPageChange: (p: number) => void;
+}) {
+  const totalPages = Math.ceil(total / pageSize);
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-between border-t border-border px-4 py-3">
+      <span className="text-[12px] text-muted-foreground">
+        Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, total)} of{" "}
+        {total.toLocaleString("en-IN")}
+      </span>
+      <div className="flex items-center gap-1">
+        <button
+          disabled={page <= 1}
+          onClick={() => onPageChange(page - 1)}
+          className="inline-flex h-7 items-center rounded-[4px] border border-border bg-card px-2 text-[12px] text-muted-foreground transition-colors hover:bg-accent disabled:opacity-40"
+        >
+          Previous
+        </button>
+        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+          const p = page <= 3 ? i + 1 : page + i - 2;
+          if (p < 1 || p > totalPages) return null;
+          return (
+            <button
+              key={p}
+              onClick={() => onPageChange(p)}
+              className={cn(
+                "inline-flex h-7 w-7 items-center justify-center rounded-[4px] text-[12px] transition-colors",
+                p === page
+                  ? "bg-primary text-primary-foreground font-medium"
+                  : "border border-border bg-card text-muted-foreground hover:bg-accent",
+              )}
+            >
+              {p}
+            </button>
+          );
+        })}
+        <button
+          disabled={page >= totalPages}
+          onClick={() => onPageChange(page + 1)}
+          className="inline-flex h-7 items-center rounded-[4px] border border-border bg-card px-2 text-[12px] text-muted-foreground transition-colors hover:bg-accent disabled:opacity-40"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}

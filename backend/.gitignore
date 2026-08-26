@@ -1,0 +1,43 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Database files
+data/guardian.db
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# Raw API responses (large, reproducible)
+data/raw/
+
+# Session cache (contains cookies, should not be committed)
+data/session.json
+
+# Validation reports (generated, not committed)
+data/validation/
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
