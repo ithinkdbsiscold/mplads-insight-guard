@@ -84,7 +84,23 @@ def create_all_tables() -> None:
         Base.metadata.create_all(bind=engine)
         apply_migrations()
     else:
-        logger.info("PostgreSQL mode — tables managed by Alembic")
+        logger.info("PostgreSQL mode — applying Alembic migrations")
+        try:
+            from alembic.config import Config
+            from alembic import command
+            import os
+            
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            alembic_ini_path = os.path.join(base_dir, "alembic.ini")
+            alembic_cfg = Config(alembic_ini_path)
+            # Ensure alembic knows where the scripts are
+            alembic_cfg.set_main_option("script_location", os.path.join(base_dir, "alembic"))
+            
+            command.upgrade(alembic_cfg, "head")
+            logger.info("Alembic migrations applied successfully")
+        except Exception as exc:
+            logger.error("Failed to apply Alembic migrations: %s", exc)
+            raise
 
 
 def get_db() -> Generator[Session, None, None]:

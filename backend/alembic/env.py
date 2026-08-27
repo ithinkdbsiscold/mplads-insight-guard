@@ -22,7 +22,13 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..'
 from app.config import settings
 from models.orm import Base
 
-config.set_main_option("sqlalchemy.url", settings.database_url)
+url = settings.database_url
+if url.startswith("postgres://"):
+    url = url.replace("postgres://", "postgresql+psycopg://", 1)
+elif url.startswith("postgresql://"):
+    url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+
+config.set_main_option("sqlalchemy.url", url)
 
 target_metadata = Base.metadata
 
