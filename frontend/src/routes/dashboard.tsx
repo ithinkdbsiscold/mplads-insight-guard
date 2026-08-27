@@ -249,10 +249,11 @@ function OverviewPage() {
                     dy={10}
                   />
                   <YAxis 
+                    width={75}
                     tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} 
                     axisLine={false} 
                     tickLine={false}
-                    tickFormatter={(val) => `₹${val}Cr`}
+                    tickFormatter={(val) => cr(val)}
                   />
                   <Tooltip 
                     contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '4px', fontSize: '12px' }}

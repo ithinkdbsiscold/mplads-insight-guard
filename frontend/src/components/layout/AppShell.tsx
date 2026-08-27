@@ -163,8 +163,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="lg:pl-[228px]">
         <header className="sticky top-0 z-20 border-b border-border bg-white">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5 sm:px-6">
-            <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5">
               <button
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open navigation"
@@ -187,8 +187,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               </nav>
             </div>
 
-            <div className="flex shrink-0 items-center gap-4">
-              <div className="flex items-center rounded-md border border-border bg-card p-0.5 text-sm">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 md:ml-auto">
+              <div className="flex flex-wrap items-center rounded-md border border-border bg-card p-0.5 text-sm">
                 <button
                   onClick={() => setSelectedHouse("Lok Sabha")}
                   className={cn(

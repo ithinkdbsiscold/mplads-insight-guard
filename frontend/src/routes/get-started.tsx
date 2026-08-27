@@ -85,7 +85,7 @@ function GetStartedPage() {
       </main>
 
       {/* Footer with navigation */}
-      <footer className="border-t border-border px-6 py-4">
+      <footer className="sticky bottom-0 z-20 border-t border-border bg-background px-6 py-4">
         <div className="mx-auto max-w-[640px] flex items-center justify-between">
           {/* Progress */}
           <div className="flex items-center gap-1.5" aria-label={`Step ${step + 1} of ${TOTAL_STEPS}`}>
