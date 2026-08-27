@@ -28,7 +28,9 @@ if url.startswith("postgres://"):
 elif url.startswith("postgresql://"):
     url = url.replace("postgresql://", "postgresql+psycopg://", 1)
 
-config.set_main_option("sqlalchemy.url", url)
+# Escape % characters for ConfigParser interpolation
+escaped_url = url.replace('%', '%%')
+config.set_main_option("sqlalchemy.url", escaped_url)
 
 target_metadata = Base.metadata
 
