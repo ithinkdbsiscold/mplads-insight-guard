@@ -24,6 +24,11 @@ def migrate_data():
     logger.info(f"Source: {sqlite_url}")
     logger.info(f"Target: {postgres_url}")
     
+    if postgres_url.startswith("postgres://"):
+        postgres_url = postgres_url.replace("postgres://", "postgresql+psycopg://", 1)
+    elif postgres_url.startswith("postgresql://"):
+        postgres_url = postgres_url.replace("postgresql://", "postgresql+psycopg://", 1)
+    
     sqlite_engine = create_engine(sqlite_url)
     postgres_engine = create_engine(postgres_url)
     
