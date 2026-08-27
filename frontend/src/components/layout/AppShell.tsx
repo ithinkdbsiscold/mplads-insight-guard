@@ -16,6 +16,7 @@ import {
   Users,
   PieChart,
   Info,
+  Cpu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useData } from "@/lib/DataContext";
@@ -27,6 +28,7 @@ const primaryNav = [
   { to: "/alerts", label: "Attention Queue", icon: AlertTriangle },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/regional-insights", label: "Regional Insights", icon: PieChart },
+  { to: "/ai-analysis", label: "AI Analysis", icon: Cpu },
 ] as const;
 
 const adminNav = [
@@ -41,6 +43,7 @@ const titles: Record<string, string> = {
   "/alerts": "Attention Queue",
   "/analytics": "Analytics",
   "/regional-insights": "Regional Insights",
+  "/ai-analysis": "AI Analysis Demonstrator",
   "/assistant": "AI Assistant",
   "/data-sources": "Data Sources",
   "/system-status": "System Status",

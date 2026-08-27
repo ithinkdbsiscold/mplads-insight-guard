@@ -374,12 +374,12 @@ function OverviewPage() {
         />
         <div className="px-4 py-8 grid sm:grid-cols-[1fr_auto] gap-6 items-center">
           <div className="space-y-3">
-            <div className="text-[13px] font-medium text-foreground">Status: <span className="text-muted-foreground ml-2 border border-border bg-card px-2 py-0.5 rounded-[2px] text-[11px]">Not yet active</span></div>
+            <div className="text-[13px] font-medium text-foreground">Status: <span className="text-primary ml-2 border border-primary/20 bg-primary/10 px-2 py-0.5 rounded-[2px] text-[11px] font-bold">Active</span></div>
             <p className="text-[13px] text-muted-foreground leading-relaxed">
               Data available for analysis: <strong className="text-foreground font-semibold">469,163 records</strong>
             </p>
             <div className="text-[13px] text-muted-foreground space-y-1">
-              <p className="font-medium text-foreground mb-1">Analysis modules pending:</p>
+              <p className="font-medium text-foreground mb-1">Analysis modules active:</p>
               <ul className="list-disc pl-5 space-y-0.5 opacity-80">
                 <li>Payment patterns</li>
                 <li>Expenditure concentration</li>
@@ -390,9 +390,9 @@ function OverviewPage() {
             </div>
           </div>
           <div className="text-right">
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-card border border-border shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
+            <Link to="/ai-analysis" className="inline-flex items-center gap-2 h-10 px-4 rounded-[3px] bg-primary text-primary-foreground font-semibold text-[12.5px] transition-colors hover:bg-primary/90">
+              Run AI Analysis
+            </Link>
           </div>
         </div>
       </Panel>
