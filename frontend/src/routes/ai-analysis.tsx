@@ -81,25 +81,33 @@ function AiAnalysisPage() {
   }, [isAnalyzing, activeStageIndex]);
 
   // Deterministic risk scoring based on project data
-  const generateRiskScore = (project: any) => {
-    if (!project) return { score: 0, level: "LOW", confidence: 0, factors: [] };
+  const generateRiskScore = (detail: any) => {
+    if (!detail?.project) return { score: 0, level: "LOW", confidence: 0, factors: [] };
     
+    const project = detail.project;
+    const expenditures = detail.expenditures || [];
     let score = 25; // Base risk
     const factors: string[] = [];
     
-    if (project.amount > 5000000) {
+    const amount = project.recommended_amount ?? project.amount ?? 0;
+    const status = project.work_status ?? project.status ?? "Unknown";
+
+    if (amount > 5000000) {
       score += 30;
       factors.push("High expenditure volume");
     }
     
-    if (project.status === "Recommended") {
+    if (status === "Recommended" || status === "Pending") {
       score += 15;
       factors.push("Project status is still pending/recommended");
     }
     
-    if (project.expenditures && project.expenditures.length > 0) {
+    if (expenditures.length > 0) {
       // Find suspicious payments (e.g. large round numbers)
-      const hasRoundPayment = project.expenditures.some((e: any) => e.amount % 100000 === 0);
+      const hasRoundPayment = expenditures.some((e: any) => {
+        const eAmount = e.expenditure_amount ?? e.amount ?? 0;
+        return eAmount > 0 && eAmount % 100000 === 0;
+      });
       if (hasRoundPayment) {
         score += 20;
         factors.push("Unusual payment pattern (round figures)");
@@ -123,7 +131,7 @@ function AiAnalysisPage() {
     };
   };
 
-  const riskResult = analysisComplete && projectDetail ? generateRiskScore(projectDetail.project) : null;
+  const riskResult = analysisComplete && projectDetail ? generateRiskScore(projectDetail) : null;
 
   return (
     <div className="space-y-8 fade-in-up pb-12">
@@ -186,11 +194,17 @@ function AiAnalysisPage() {
               disabled={isAnalyzing}
             >
               <option value="">-- Choose a project --</option>
-              {projectsData?.result.rows.map((p: any) => (
-                <option key={p.id} value={p.id}>
-                  {p.id} - {p.project.substring(0, 50)}... ({cr(p.amount)})
-                </option>
-              ))}
+              {projectsData?.result?.rows?.length ? projectsData.result.rows.map((p: any) => {
+                const desc = p.work_description ?? p.project_name ?? p.project ?? "Unknown Project";
+                const amount = p.recommended_amount ?? p.amount ?? 0;
+                return (
+                  <option key={p.id} value={p.id}>
+                    {p.id} - {desc.length > 50 ? desc.substring(0, 50) + "..." : desc} ({cr(amount)})
+                  </option>
+                );
+              }) : (
+                <option value="" disabled>No projects available</option>
+              )}
             </select>
           </div>
           <button
@@ -227,23 +241,23 @@ function AiAnalysisPage() {
                 <div className="p-4 grid grid-cols-2 gap-y-4 gap-x-6 text-[13px]">
                   <div>
                     <span className="block text-[11px] font-bold uppercase text-muted-foreground mb-0.5">Project</span>
-                    <span className="font-medium">{projectDetail.project.project}</span>
+                    <span className="font-medium">{projectDetail.project.work_description ?? projectDetail.project.project ?? "Not available"}</span>
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold uppercase text-muted-foreground mb-0.5">MP</span>
-                    <span className="font-medium">{projectDetail.project.mp_name}</span>
+                    <span className="font-medium">{projectDetail.project.mp_name ?? "Not available"}</span>
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold uppercase text-muted-foreground mb-0.5">Location</span>
-                    <span className="font-medium">{projectDetail.project.district}, {projectDetail.project.state}</span>
+                    <span className="font-medium">{(projectDetail.project.district || projectDetail.project.constituency) ?? "Unknown"}, {projectDetail.project.state ?? "Unknown"}</span>
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold uppercase text-muted-foreground mb-0.5">Allocation</span>
-                    <span className="font-medium">{cr(projectDetail.project.amount)}</span>
+                    <span className="font-medium">{cr(projectDetail.project.recommended_amount ?? projectDetail.project.amount ?? 0)}</span>
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold uppercase text-muted-foreground mb-0.5">Status</span>
-                    <span className="font-medium">{projectDetail.project.status}</span>
+                    <span className="font-medium">{projectDetail.project.work_status ?? projectDetail.project.status ?? "Not available"}</span>
                   </div>
                 </div>
               </Panel>
