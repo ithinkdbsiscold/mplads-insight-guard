@@ -1,6 +1,5 @@
 """Health check routes."""
-from fastapi import APIRouter, Depends, Response, UploadFile, File, BackgroundTasks
-import shutil
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from datetime import datetime, timezone
@@ -60,25 +59,3 @@ def db_verify(db: Session = Depends(get_db)):
         "regclass": regclass_results,
         "row_counts": row_counts
     }
-
-@router.post("/db_migrate_upload", summary="Upload sqlite db and migrate")
-def db_migrate_upload(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
-    tmp_path = "/tmp/guardian.db"
-    # Ensure /tmp exists (Render might not have it if using certain OSes, but usually does. Better use python's tempfile if /tmp is risky, but Render has /tmp)
-    import os
-    os.makedirs("/tmp", exist_ok=True)
-    with open(tmp_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-        
-    def run_migration():
-        try:
-            logger.info("Starting background data migration...")
-            # We import here to avoid circular imports if any
-            from scripts.migrate_sqlite_to_postgres import migrate_data
-            migrate_data(sqlite_path=tmp_path)
-            logger.info("Background data migration complete.")
-        except Exception as e:
-            logger.error(f"Background migration failed: {e}")
-            
-    background_tasks.add_task(run_migration)
-    return {"status": "migration_started"}
