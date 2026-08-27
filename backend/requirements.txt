@@ -22,3 +22,6 @@ httpx==0.27.2         # For FastAPI TestClient
 
 # Utilities
 python-dotenv==1.0.1  # Fallback if not using pydantic-settings
+
+# File uploads
+python-multipart==0.0.12
