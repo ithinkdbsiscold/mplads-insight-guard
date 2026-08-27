@@ -13,8 +13,8 @@ from app.config import settings
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-def migrate_data():
-    sqlite_url = "sqlite:///./data/guardian.db"
+def migrate_data(sqlite_path="./data/guardian.db"):
+    sqlite_url = f"sqlite:///{sqlite_path}"
     postgres_url = settings.database_url
     
     if postgres_url.startswith("sqlite"):
