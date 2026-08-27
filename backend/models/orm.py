@@ -34,6 +34,7 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    ForeignKeyConstraint,
     func,
 )
 from sqlalchemy.orm import DeclarativeBase, relationship
@@ -174,7 +175,9 @@ class Work(Base):
 
     mp           = relationship("MP",          back_populates="works")
     expenditures = relationship("Expenditure", back_populates="work", lazy="select")
-    findings     = relationship("AgentFinding", back_populates="work", lazy="select")
+    findings     = relationship("AgentFinding", back_populates="work", lazy="select",
+                                primaryjoin="Work.work_id == AgentFinding.work_id",
+                                foreign_keys="[AgentFinding.work_id]")
 
     def __repr__(self) -> str:
         return f"<Work {self.work_id} {self.house} ls={self.ls_term} status={self.work_status}>"
@@ -193,6 +196,11 @@ class Expenditure(Base):
     """
     __tablename__ = "expenditures"
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["house", "ls_term", "state", "work_id"],
+            ["works.house", "works.ls_term", "works.state", "works.work_id"],
+            name="fk_expenditure_work"
+        ),
         Index("ix_exp_house_term", "house", "ls_term"),
         Index("ix_exp_house_term_state", "house", "ls_term", "state"),
         Index("ix_exp_mp_house_term", "mp_id", "house", "ls_term"),
@@ -200,7 +208,7 @@ class Expenditure(Base):
     )
 
     expenditure_id      = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    work_id             = Column(Integer, ForeignKey("works.work_id"), nullable=True, index=True)
+    work_id             = Column(Integer, nullable=True, index=True)
     mp_id               = Column(String(16), ForeignKey("mps.mp_id"), nullable=True, index=True)
     mp_name             = Column(String(255), nullable=False, index=True)
     house               = Column(String(20),  nullable=False, index=True)
@@ -220,9 +228,7 @@ class Expenditure(Base):
     created_at   = Column(DateTime, server_default=func.now())
 
     mp   = relationship("MP",   back_populates="expenditures")
-    work = relationship("Work", back_populates="expenditures",
-                        primaryjoin="Expenditure.work_id == Work.work_id",
-                        foreign_keys="[Expenditure.work_id]")
+    work = relationship("Work", back_populates="expenditures")
 
     def __repr__(self) -> str:
         return f"<Expenditure {self.work_id} {self.payment_status} ₹{self.expenditure_amount}>"
@@ -244,7 +250,7 @@ class AgentFinding(Base):
     __tablename__ = "agent_findings"
 
     finding_id    = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    work_id       = Column(Integer, ForeignKey("works.work_id"), nullable=True, index=True)
+    work_id       = Column(Integer, nullable=True, index=True)
     mp_id         = Column(String(16), ForeignKey("mps.mp_id"), nullable=True, index=True)
     agent_name    = Column(String(100),  nullable=False, index=True)
     finding_type  = Column(String(100),  nullable=False)
