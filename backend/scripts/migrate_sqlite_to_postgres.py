@@ -220,12 +220,22 @@ def migrate_data(sqlite_path="./data/guardian.db", reset=False):
             pg_w = pg_session.execute(text("SELECT COUNT(DISTINCT work_id) FROM works")).scalar()
             logger.info(f"Distinct Works      | SQLite: {sq_w:6} | PG: {pg_w:6} | {'MATCH' if sq_w==pg_w else 'MISMATCH'}")
             
-            # Check Lok Sabha 17 vs 18
-            for term in [17, 18]:
-                sq_ls = sqlite_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='Lok Sabha' AND ls_term={term}")).scalar()
-                pg_ls = pg_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='Lok Sabha' AND ls_term={term}")).scalar()
-                logger.info(f"Lok Sabha {term} Works  | SQLite: {sq_ls:6} | PG: {pg_ls:6} | {'MATCH' if sq_ls==pg_ls else 'MISMATCH'}")
-                
+            # Check terms
+            for house, term in [('Lok Sabha', 17), ('Lok Sabha', 18), ('Rajya Sabha', None)]:
+                if term:
+                    sq_w = sqlite_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='{house}' AND ls_term={term}")).scalar()
+                    pg_w = pg_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='{house}' AND ls_term={term}")).scalar()
+                    logger.info(f"{house} {term} Works  | SQLite: {sq_w:6} | PG: {pg_w:6} | {'MATCH' if sq_w==pg_w else 'MISMATCH'}")
+                else:
+                    sq_w = sqlite_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='{house}'")).scalar()
+                    pg_w = pg_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='{house}'")).scalar()
+                    logger.info(f"{house} Works        | SQLite: {sq_w:6} | PG: {pg_w:6} | {'MATCH' if sq_w==pg_w else 'MISMATCH'}")
+                    
+            # Financial Aggregates
+            sq_exp_amt = sqlite_session.execute(text("SELECT SUM(expenditure_amount) FROM expenditures")).scalar() or 0
+            pg_exp_amt = pg_session.execute(text("SELECT SUM(expenditure_amount) FROM expenditures")).scalar() or 0
+            logger.info(f"Total Exp Amount    | SQLite: {sq_exp_amt:.2f} | PG: {pg_exp_amt:.2f} | {'MATCH (within precision)' if abs(sq_exp_amt - pg_exp_amt) < 1.0 else 'MISMATCH'}")
+            
             # Random field-level sample check
             logger.info("--- Field-Level Sample Validation ---")
             sample_mp = sqlite_session.execute(text("SELECT mp_id, name, state FROM mps LIMIT 1")).fetchone()
