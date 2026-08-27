@@ -98,6 +98,24 @@ def create_all_tables() -> None:
             
             command.upgrade(alembic_cfg, "head")
             logger.info("Alembic migrations applied successfully")
+            
+            # Verify actual database schema in PostgreSQL
+            from sqlalchemy import text
+            with engine.connect() as conn:
+                result = conn.execute(text(
+                    "SELECT tablename FROM pg_tables WHERE schemaname = 'public'"
+                )).scalars().all()
+                
+                required_tables = {"mps", "allocations", "works", "expenditures", "agent_findings", "sync_metadata"}
+                existing_tables = set(result)
+                missing = required_tables - existing_tables
+                
+                if missing:
+                    logger.error("Migration finished but tables are missing: %s", missing)
+                    raise RuntimeError(f"Missing required tables in production schema: {missing}")
+                    
+                logger.info("Verified all required tables exist in production database: %s", required_tables)
+                
         except Exception as exc:
             logger.error("Failed to apply Alembic migrations: %s", exc)
             raise
