@@ -4,10 +4,6 @@ export function lakh(value: number) {
 
 export function cr(valueInRupees: number) {
   const inCr = valueInRupees / 10000000.0;
-  if (Math.abs(inCr) > 0 && Math.abs(inCr) < 1) {
-    const inLakhs = valueInRupees / 100000.0;
-    return `₹${inLakhs.toLocaleString("en-IN", { maximumFractionDigits: 2 })} L`;
-  }
   return `₹${inCr.toLocaleString("en-IN", { maximumFractionDigits: 2 })} Cr`;
 }
 
