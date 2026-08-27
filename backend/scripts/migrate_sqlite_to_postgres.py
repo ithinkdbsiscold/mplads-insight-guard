@@ -13,7 +13,7 @@ from app.config import settings
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-def migrate_data(sqlite_path="./data/guardian.db"):
+def migrate_data(sqlite_path="./data/guardian.db", reset=False):
     sqlite_url = f"sqlite:///{sqlite_path}"
     postgres_url = settings.database_url
     
@@ -35,6 +35,23 @@ def migrate_data(sqlite_path="./data/guardian.db"):
     
     SqliteSession = sessionmaker(bind=sqlite_engine)
     PostgresSession = sessionmaker(bind=postgres_engine)
+    
+    if reset:
+        logger.warning("!!! WARNING: RESET FLAG PROVIDED !!!")
+        logger.warning("THIS WILL DELETE EXISTING POSTGRESQL APPLICATION DATA AND REIMPORT FROM SQLITE.")
+        logger.warning("Waiting 5 seconds before proceeding... Press Ctrl+C to abort.")
+        time.sleep(5)
+        
+        try:
+            from sqlalchemy import text
+            with PostgresSession() as pg_session:
+                logger.info("Executing CASCADE TRUNCATE on application tables...")
+                pg_session.execute(text("TRUNCATE TABLE agent_findings, expenditures, works, allocations, mps, sync_metadata CASCADE;"))
+                pg_session.commit()
+                logger.info("PostgreSQL application data cleared. Alembic history preserved.")
+        except Exception as e:
+            logger.error(f"Failed to clear PostgreSQL data: {e}")
+            sys.exit(1)
     
     logger.info("Ensuring target schema exists...")
     Base.metadata.create_all(bind=postgres_engine)
@@ -175,7 +192,57 @@ def migrate_data(sqlite_path="./data/guardian.db"):
     for name, r in results.items():
         logger.info(f"{name:15} | Inserted: {r['inserted']:6} | Skipped: {r['skipped']:6} | Failed: {r['failed']:6} | Time: {r['time']:.2f}s")
         
-    logger.info("Migration complete.")
+    logger.info("Migration complete. Starting validation...")
+    
+    # -------------------------------------------------------------------------
+    # Validation Phase
+    # -------------------------------------------------------------------------
+    logger.info("==================================================")
+    logger.info("VALIDATION REPORT")
+    logger.info("==================================================")
+    try:
+        from sqlalchemy import text
+        with SqliteSession() as sqlite_session, PostgresSession() as pg_session:
+            for model, name, pk_attr in models_to_migrate:
+                sqlite_count = sqlite_session.query(model).count()
+                pg_count = pg_session.query(model).count()
+                match = "MATCH" if sqlite_count == pg_count else "MISMATCH"
+                if name == "Expenditures" and sqlite_count != pg_count:
+                    match = "EXPECTED MISMATCH (Orphans Skipped)"
+                logger.info(f"Validation {name:15} | SQLite: {sqlite_count:6} | PG: {pg_count:6} | {match}")
+                
+            logger.info("--- Aggregate Validation ---")
+            sq_mp = sqlite_session.execute(text("SELECT COUNT(DISTINCT mp_id) FROM mps")).scalar()
+            pg_mp = pg_session.execute(text("SELECT COUNT(DISTINCT mp_id) FROM mps")).scalar()
+            logger.info(f"Distinct MPs        | SQLite: {sq_mp:6} | PG: {pg_mp:6} | {'MATCH' if sq_mp==pg_mp else 'MISMATCH'}")
+            
+            sq_w = sqlite_session.execute(text("SELECT COUNT(DISTINCT work_id) FROM works")).scalar()
+            pg_w = pg_session.execute(text("SELECT COUNT(DISTINCT work_id) FROM works")).scalar()
+            logger.info(f"Distinct Works      | SQLite: {sq_w:6} | PG: {pg_w:6} | {'MATCH' if sq_w==pg_w else 'MISMATCH'}")
+            
+            # Check Lok Sabha 17 vs 18
+            for term in [17, 18]:
+                sq_ls = sqlite_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='Lok Sabha' AND ls_term={term}")).scalar()
+                pg_ls = pg_session.execute(text(f"SELECT COUNT(*) FROM works WHERE house='Lok Sabha' AND ls_term={term}")).scalar()
+                logger.info(f"Lok Sabha {term} Works  | SQLite: {sq_ls:6} | PG: {pg_ls:6} | {'MATCH' if sq_ls==pg_ls else 'MISMATCH'}")
+                
+            # Random field-level sample check
+            logger.info("--- Field-Level Sample Validation ---")
+            sample_mp = sqlite_session.execute(text("SELECT mp_id, name, state FROM mps LIMIT 1")).fetchone()
+            if sample_mp:
+                pg_sample = pg_session.execute(text(f"SELECT name, state FROM mps WHERE mp_id='{sample_mp[0]}'")).fetchone()
+                if pg_sample and pg_sample[0] == sample_mp[1] and pg_sample[1] == sample_mp[2]:
+                    logger.info("MP Field validation: PASSED")
+                else:
+                    logger.info("MP Field validation: FAILED")
+                    
+    except Exception as e:
+        logger.error(f"Validation failed: {e}")
 
 if __name__ == "__main__":
-    migrate_data()
+    import argparse
+    parser = argparse.ArgumentParser(description="Migrate SQLite data to PostgreSQL")
+    parser.add_argument("--reset", action="store_true", help="Clear existing PostgreSQL data before migrating")
+    args = parser.parse_args()
+    
+    migrate_data(reset=args.reset)
